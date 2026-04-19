@@ -1,106 +1,221 @@
-import { useState, useEffect, useRef, Suspense, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-import { OrbitControls, Stars, Float } from "@react-three/drei";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-	AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+	AreaChart, Area, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 	XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
 import { 
 	Headphones, Cloud, Mail, Folder, User, Briefcase, Award, Send,
-	Linkedin, Server, Shield, Code, CheckCircle, Menu, X,
-	Sun, Moon, Phone, Globe, Wifi,
-	Activity, TrendingUp, MousePointer
+	Linkedin, Server, Code, CheckCircle, Menu, X,
+	Sun, Moon, Phone, Globe,
+	Activity, TrendingUp, Calendar
 } from "lucide-react";
 import "./App.css";
 
-const skillData = [
-	{ name: "Microsoft 365", value: 95, color: "#0078d4" },
-	{ name: "Azure AD/Entra", value: 92, color: "#0078d4" },
-	{ name: "Azure Cloud", value: 90, color: "#0078d4" },
-	{ name: "Intune/MEM", value: 92, color: "#0078d4" },
-	{ name: "Active Directory", value: 90, color: "#0078d4" },
-	{ name: "PowerShell/Bash", value: 88, color: "#0078d4" },
-	{ name: "Networking", value: 85, color: "#0078d4" },
-	{ name: "Endpoint Security", value: 87, color: "#0078d4" },
+const skillProficiency = [
+	{ skill: "Microsoft 365", level: 95, category: "cloud", years: 8 },
+	{ skill: "Azure AD/Entra", level: 92, category: "cloud", years: 6 },
+	{ skill: "Intune/MEM", level: 92, category: "security", years: 5 },
+	{ skill: "Azure Cloud", level: 90, category: "cloud", years: 6 },
+	{ skill: "Active Directory", level: 90, category: "infrastructure", years: 8 },
+	{ skill: "Exchange Server", level: 88, category: "cloud", years: 7 },
+	{ skill: "PowerShell", level: 88, category: "automation", years: 6 },
+	{ skill: "Endpoint Security", level: 87, category: "security", years: 5 },
+	{ skill: "Networking", level: 85, category: "infrastructure", years: 6 },
+	{ skill: "Defender ATP", level: 85, category: "security", years: 4 },
+	{ skill: "SharePoint/Teams", level: 90, category: "cloud", years: 7 },
+	{ skill: "SQL Server", level: 80, category: "database", years: 5 },
+];
+
+const skillTree = {
+	cloud: ["Microsoft 365", "Azure AD", "Exchange", "SharePoint", "Teams", "OneDrive", "Intune"],
+	security: ["Intune", "Endpoint Security", "Defender ATP", "Conditional Access", "MFA", "Zero Trust"],
+	infrastructure: ["Active Directory", "DHCP", "DNS", "GPO", "Networking", "VPN", "VLAN"],
+	automation: ["PowerShell", "Bash", "GraphAPI", "Automation", "YAML", "REST API"],
+	database: ["SQL Server", "Azure SQL", "Database Admin", "Always On"],
+};
+
+const timelineEvents = [
+	{ year: "2016", month: "Feb", title: "Matrix Warehouse IT Consultant", type: "job", description: "IT support & sales, highest customer ratings" },
+	{ year: "2017", month: "Sep", title: "Nerospec Group - Junior IT Manager", type: "job", description: "Hybrid AD migration, Teams deployment" },
+	{ year: "2018", month: "", title: "CloudScale365 - Technical Support Engineer", type: "job", description: "100+ tickets weekly, Solutions Architect" },
+	{ year: "2018", month: "", title: "tekRESCUE - Tier 3 IT & QuickBooks", type: "job", description: "Tier 3 support, QuickBooks SME" },
+	{ year: "2021", month: "Apr", title: "Support Adventure Ltd - IT Support Engineer", type: "job", description: "Intune/MAM, 30+ digital projects" },
+	{ year: "2023", month: "Mar", title: "Microsoft Customer Service Ambassador", type: "job", description: "5-star rating, MacOS specialist" },
+	{ year: "2024", month: "Aug", title: "US-based CPA Firm - Lead Consultant", type: "job", description: "M365 migration, Azure VM ZTNA" },
+	{ year: "2026", month: "Feb", title: "Logics Technology - Tier 2 IT Support", type: "job", description: "Automated workflows, Copilot integration" },
+	{ year: "2016", month: "", title: "CompTIA A+", type: "cert", description: "IT Systems Support" },
+	{ year: "2017", month: "", title: "MCSA 70-697", type: "cert", description: "Windows Server 2016" },
+	{ year: "2022", month: "", title: "SC-300", type: "cert", description: "Identity & Access Administrator" },
+	{ year: "2024", month: "", title: "MS-900", type: "cert", description: "Microsoft 365 Fundamentals" },
+];
+
+const techKeywords = [
+	"Microsoft365", "AzureAD", "ExchangeOnline", "SharePoint", "Teams", "OneDrive", "Intune",
+	"AzureVM", "VirtualNetwork", "VPN", "ZTNA", "ConditionalAccess", "MFA", "SSO",
+	"PowerShell", "Bash", "GraphAPI", "YAML", "RESTAPI", "Automation",
+	"ActiveDirectory", "HybridAD", "GPO", "DHCP", "DNS", "DFS", "ADFS",
+	"DefenderATP", "Sentinel", "EndpointSecurity", "Compliance", "MEM",
+	"SQLServer", "AlwaysOn", "AzureSQL", "Database",
+	"VLAN", "Firewall", "Cisco", "Fortinet", "SonicWall", "ZeroTrust",
+	"Exchange2016", "Exchange2019", "DAG", "Transport",
+	"ConnectWise", "NinjaOne", "ITGlue", "Kanban", "Jira",
+	"MacOS", "WindowsServer", "Linux", "Ubuntu", "CentOS"
 ];
 
 const experienceData = [
-	{ year: "2016", projects: 15, clients: 8 },
-	{ year: "2017", projects: 25, clients: 12 },
-	{ year: "2018", projects: 40, clients: 18 },
-	{ year: "2019", projects: 60, clients: 25 },
-	{ year: "2020", projects: 75, clients: 30 },
-	{ year: "2021", projects: 90, clients: 40 },
-	{ year: "2022", projects: 100, clients: 45 },
-	{ year: "2023", projects: 110, clients: 50 },
-	{ year: "2024", projects: 120, clients: 55 },
+	{ year: "2016", projects: 15, clients: 8, tickets: 200 },
+	{ year: "2017", projects: 25, clients: 12, tickets: 350 },
+	{ year: "2018", projects: 45, clients: 20, tickets: 520 },
+	{ year: "2019", projects: 65, clients: 28, tickets: 480 },
+	{ year: "2020", projects: 75, clients: 32, tickets: 420 },
+	{ year: "2021", projects: 90, clients: 40, tickets: 380 },
+	{ year: "2022", projects: 100, clients: 45, tickets: 350 },
+	{ year: "2023", projects: 110, clients: 50, tickets: 320 },
+	{ year: "2024", projects: 120, clients: 55, tickets: 300 },
+	{ year: "2025", projects: 125, clients: 58, tickets: 280 },
 ];
 
-const technologyDistribution = [
-	{ name: "Microsoft 365", value: 35, color: "#0078d4" },
-	{ name: "Azure", value: 25, color: "#00809F" },
-	{ name: "Intune", value: 20, color: "#00b7c3" },
-	{ name: "Security", value: 15, color: "#8764B8" },
-	{ name: "Other", value: 5, color: "#323130" },
+const radarData = [
+	{ subject: "Microsoft 365", A: 95, fullMark: 100 },
+	{ subject: "Azure", A: 90, fullMark: 100 },
+	{ subject: "Security", A: 88, fullMark: 100 },
+	{ subject: "Networking", A: 85, fullMark: 100 },
+	{ subject: "Automation", A: 88, fullMark: 100 },
+	{ subject: "Servers", A: 90, fullMark: 100 },
+	{ subject: "Database", A: 80, fullMark: 100 },
 ];
 
-const jobHistory = [
-	{
-		company: "Logics Technology",
-		role: "Tier 2 IT Support Engineer",
-		duration: "Feb 2026 – Apr 2026",
-		highlights: ["Automated workflows", "Copilot integration", "Contract extension"]
-	},
-	{
-		company: "US-based CPA Firm",
-		role: "Lead Technology Consultant",
-		duration: "Aug 2024 – Feb 2025",
-		highlights: ["20+ user M365 migration", "Azure VM ZTNA", "40% Teams efficiency"]
-	},
-	{
-		company: "Microsoft",
-		role: "Customer Service Ambassador",
-		duration: "Mar 2023 – Jul 2024",
-		highlights: ["5-star rating", "85% bonus targets", "MacOS specialist"]
-	},
-	{
-		company: "Support Adventure Ltd",
-		role: "IT Support Engineer",
-		duration: "Apr 2021 – Dec 2022",
-		highlights: ["30+ digital projects", "11+ tickets daily", "Exec training"]
-	},
-	{
-		company: "CloudScale365",
-		role: "Technical Support Engineer",
-		duration: "2018 – 2021",
-		highlights: ["100+ tickets weekly", "100+ projects delivered", "Solutions Architect"]
-	},
-	{
-		company: "Nerospec Group",
-		role: "Junior IT Manager",
-		duration: "Sep 2017 – Jul 2018",
-		highlights: ["Hybrid AD migration", "Teams deployment", "Multi-office support"]
-	},
-];
+function MatrixBackground() {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+		
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		
+		const columns = Math.floor(canvas.width / 20);
+		const drops: number[] = new Array(columns).fill(1);
+		const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*<>[]{}".split("");
+		
+		const draw = () => {
+			ctx.fillStyle = "rgba(10, 10, 26, 0.05)";
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			
+			ctx.font = "14px monospace";
+			ctx.fillStyle = "#00b7c3";
+			
+			for (let i = 0; i < drops.length; i++) {
+				const char = chars[Math.floor(Math.random() * chars.length)];
+				const text = Math.random() > 0.9 ? `[${char}]` : char;
+				ctx.fillStyle = `rgba(0, 183, 195, ${Math.random() * 0.5 + 0.5})`;
+				ctx.fillText(text, i * 20, drops[i] * 20);
+				
+				if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+					drops[i] = 0;
+				}
+				drops[i]++;
+			}
+		};
+		
+		const interval = setInterval(draw, 50);
+		
+		const handleResize = () => {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		};
+		
+		window.addEventListener("resize", handleResize);
+		
+		return () => {
+			clearInterval(interval);
+			window.removeEventListener("resize", handleResize);
+		};
+	}, []);
+
+	return (
+		<canvas 
+			ref={canvasRef} 
+			className="matrix-canvas"
+		/>
+	);
+}
+
+function LogStream() {
+	const logRef = useRef<HTMLDivElement>(null);
+	const [logs, setLogs] = useState<string[]>([]);
+	
+	useEffect(() => {
+		const logMessages = [
+			"[2026-04-19 10:23:45] INFO: Connecting to Azure AD tenant...",
+			"[2026-04-19 10:23:46] INFO: Authenticating user session...",
+			"[2026-04-19 10:23:47] INFO: Fetching Intune policies...",
+			"[2026-04-19 10:23:48] DEBUG: Processing conditional access rules...",
+			"[2026-04-19 10:23:49] INFO: Applying MFA challenge...",
+			"[2026-04-19 10:23:50] SUCCESS: User authenticated (SAML assertion verified)",
+			"[2026-04-19 10:23:51] INFO: Checking mailbox permissions...",
+			"[2026-04-19 10:23:52] DEBUG: Query: Get-Mailbox -Identity daniel@custompcrepublic.com",
+			"[2026-04-19 10:23:53] INFO: Exchange Online connection established",
+			"[2026-04-19 10:23:54] INFO: Syncing calendar entries...",
+			"[2026-04-19 10:23:55] DEBUG: GraphAPI: /users/daniel@example.com/calendar/events",
+			"[2026-04-19 10:23:56] SUCCESS: 47 events synced",
+			"[2026-04-19 10:23:57] INFO: Checking SharePoint permissions...",
+			"[2026-04-19 10:23:58] DEBUG: Get-SPOTenantSyncClientRestriction",
+			"[2026-04-19 10:23:59] INFO: Tenant sync enabled",
+			"[2026-04-19 10:24:00] INFO: Deploying Intune device policies...",
+			"[2026-04-19 10:24:01] DEBUG: Create-DeviceConfigurationPolicy",
+			"[2026-04-19 10:24:02] SUCCESS: Policy deployed to 250 devices",
+			"[2026-04-19 10:24:03] INFO: Scanning endpoint security...",
+			"[2026-04-19 10:24:04] WARN: 3 devices require attention",
+			"[2026-04-19 10:24:05] INFO: Initiating Defender scan...",
+			"[2026-04-19 10:24:06] DEBUG: ATP API: deviceactions/run antivirus scan",
+			"[2026-04-19 10:24:07] INFO: Scan completed - No threats detected",
+			"[2026-04-19 10:24:08] INFO: Checking VPN connections...",
+			"[2026-04-19 10:24:09] DEBUG: Get-VpnConnection | Where-Object {$_.Status -eq 'Connected'}",
+			"[2026-04-19 10:24:10] INFO: 15 active VPN sessions",
+			"[2026-04-19 10:24:11] INFO: Monitoring Azure VM health...",
+			"[2026-04-19 10:24:12] DEBUG: Get-AzVM | Select-Object Name, Status",
+			"[2026-04-19 10:24:13] INFO: All 12 VMs running optimally",
+			"[2026-04-19 10:24:14] INFO: Processing support tickets...",
+			"[2026-04-19 10:24:15] DEBUG: Get-Service @support | Where-Object Priority -eq 'High'",
+			"[2026-04-19 10:24:16] INFO: 5 high priority tickets pending",
+			"[2026-04-19 10:24:17] SYSTEM: Auto-assigning tickets to Available Engineers",
+		];
+		
+		let index = 0;
+		const interval = setInterval(() => {
+			setLogs(prev => {
+				const newLog = [...prev, logMessages[index % logMessages.length]];
+				if (newLog.length > 15) newLog.shift();
+				index++;
+				return newLog;
+			});
+		}, 150);
+		
+		return () => clearInterval(interval);
+	}, []);
+
+	return (
+		<div className="log-stream" ref={logRef}>
+			{logs.map((log, i) => (
+				<div key={i} className="log-line">
+					{log}
+				</div>
+			))}
+		</div>
+	);
+}
 
 const certifications = [
-	{ name: "SC-300", issuer: "Microsoft", year: "2022" },
-	{ name: "MS-900", issuer: "Microsoft", year: "2024" },
-	{ name: "MCSA 70-697", issuer: "Microsoft", year: "2017" },
-	{ name: "CompTIA A+", issuer: "CompTIA", year: "2016" },
-];
-
-const skills = [
-	{ name: "Microsoft 365", icon: <Cloud size={24} />, description: "Exchange, Teams, SharePoint, OneDrive, Intune", level: 95 },
-	{ name: "Azure AD/Entra", icon: <Shield size={24} />, description: "Conditional Access, MFA, SSO, Identity Protection", level: 92 },
-	{ name: "Azure Cloud", icon: <Cloud size={24} />, description: "VM, Networking, Defender, Sentinel", level: 90 },
-	{ name: "Intune/MEM", icon: <Shield size={24} />, description: "MDM, MAM, Compliance, Endpoint Security", level: 92 },
-	{ name: "Active Directory", icon: <Server size={24} />, description: "Domain Controllers, GPO, ADFS, Hybrid AD", level: 90 },
-	{ name: "PowerShell/Bash", icon: <Code size={24} />, description: "Scripting, Automation, GraphAPI", level: 88 },
-	{ name: "Networking", icon: <Wifi size={24} />, description: "VLAN, VPN, Firewall, Zero Trust", level: 85 },
-	{ name: "Endpoint Security", icon: <Shield size={24} />, description: "Windows, macOS, Linux, Android", level: 87 },
+	{ name: "SC-300", issuer: "Microsoft", year: "2022", desc: "Identity & Access Administrator" },
+	{ name: "MS-900", issuer: "Microsoft", year: "2024", desc: "M365 Fundamentals" },
+	{ name: "MCSA 70-697", issuer: "Microsoft", year: "2017", desc: "Windows Server 2016" },
+	{ name: "CompTIA A+", issuer: "CompTIA", year: "2016", desc: "IT Systems Support" },
 ];
 
 const services = [
@@ -135,60 +250,6 @@ const projects = [
 	{ id: "teams-adoption", title: "Teams Adoption", desc: "40% efficiency increase", tags: ["Teams"], year: "2024", metric: "40%" },
 	{ id: "hybrid-ad", title: "Hybrid Azure AD", desc: "Full migration", tags: ["Azure AD"], year: "2017", metric: "50+" },
 ];
-
-function DataCenterBackground() {
-	const gridRef = useRef<THREE.Group>(null);
-	
-	useFrame(({ clock }) => {
-		if (gridRef.current) {
-			gridRef.current.rotation.x = clock.getElapsedTime() * 0.02;
-			gridRef.current.rotation.y = clock.getElapsedTime() * 0.01;
-		}
-	});
-
-	const servers = useMemo(() => {
-		const coords = [
-			[-5,-3,-2], [3,-2,4], [-2,1,5], [4,2,-3], [-4,0,1],
-			[2,-1,-4], [0,3,2], [-3,-1,-1], [5,-2,0], [-1,2,-3],
-			[1,-3,3], [-5,1,-2], [3,0,1], [-2,-2,4], [4,-1,-1],
-			[0,1,-4], [-3,2,0], [2,3,-2], [-1,-3,2], [5,1,3]
-		];
-		return coords.map((pos, idx) => ({
-			position: pos as [number, number, number],
-			scale: 0.15 + (idx % 5) * 0.04,
-			color: idx % 2 === 0 ? "#00b7c3" : "#8764B8",
-		}));
-	}, []);
-
-	return (
-		<group ref={gridRef}>
-			<Stars radius={50} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
-			{/* Server racks */}
-			{servers.map((server, i) => (
-				<Float key={i} speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
-					<mesh position={server.position} scale={server.scale}>
-						<boxGeometry args={[1, 1.5, 0.5]} />
-						<meshStandardMaterial 
-							color="#1a1a2e" 
-							emissive={server.color}
-							emissiveIntensity={0.3}
-							metalness={0.8}
-							roughness={0.2}
-						/>
-					</mesh>
-				</Float>
-			))}
-			{/* LED strips */}
-			<mesh position={[0, -5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-				<planeGeometry args={[30, 30]} />
-				<meshBasicMaterial color="#0a0a1a" transparent opacity={0.9} />
-			</mesh>
-			<pointLight position={[0, 5, 0]} intensity={0.5} color="#00b7c3" />
-			<pointLight position={[-5, 3, 5]} intensity={0.3} color="#8764B8" />
-			<pointLight position={[5, 3, -5]} intensity={0.3} color="#0078d4" />
-		</group>
-	);
-}
 
 function App() {
 	const [activeSection, setActiveSection] = useState("home");
@@ -312,12 +373,7 @@ function App() {
 
 			<main>
 				<section id="home" className="hero">
-					<Canvas className="hero-canvas">
-						<Suspense fallback={null}>
-							<DataCenterBackground />
-						</Suspense>
-						<OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-					</Canvas>
+					<MatrixBackground />
 					<div className="hero-content">
 						<motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
 							<p className="hero-greeting">Hello, I'm</p>
@@ -326,18 +382,18 @@ function App() {
 								Tier 2 IT Support Engineer • Cloud Systems Engineer
 							</p>
 							<p className="hero-description">
-								8+ years of enterprise IT experience. SC-300 & MS-900 certified.
+								8+ years enterprise IT experience. SC-300 & MS-900 certified.
 								Specializing in Microsoft 365, Azure, and cloud infrastructure.
 							</p>
 							<div className="hero-stats">
 								<div className="stat-box">
 									<TrendingUp size={24} />
-									<span className="stat-value">120+</span>
+									<span className="stat-value">125+</span>
 									<span className="stat-label">Projects</span>
 								</div>
 								<div className="stat-box">
 									<User size={24} />
-									<span className="stat-value">55+</span>
+									<span className="stat-value">58+</span>
 									<span className="stat-label">Clients</span>
 								</div>
 								<div className="stat-box">
@@ -350,35 +406,45 @@ function App() {
 								<button className="btn btn-primary" onClick={() => scrollToSection("contact")}>
 									<Send size={18} /> Get In Touch
 								</button>
-								<button className="btn btn-secondary" onClick={() => scrollToSection("projects")}>
-									<Folder size={18} /> View Projects
+								<button className="btn btn-secondary" onClick={() => scrollToSection("skills")}>
+									<Code size={18} /> View Skills
 								</button>
 							</div>
 						</motion.div>
 					</div>
-					<motion.div className="hero-scroll-indicator" animate={{ y: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-						<MousePointer size={24} />
-					</motion.div>
+					<div className="log-panel">
+						<LogStream />
+					</div>
 				</section>
 
 				<section id="about" className="section about">
 					<div className="section-content">
 						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
-							<h2>About Me</h2>
-							<p>Experience that delivers results</p>
+							<h2>Experience Timeline</h2>
+							<p>My journey through IT</p>
 						</motion.div>
 
-						<div className="about-grid">
-							<motion.div className="about-card" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}>
-								<div className="about-icon"><User size={32} /></div>
-								<h3>Who I Am</h3>
-								<p>8+ years experience in IT systems support, Microsoft 365 & Azure cloud, and cybersecurity. Passionate about scalable, secure solutions.</p>
-							</motion.div>
-							<motion.div className="about-card" initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}>
-								<div className="about-icon"><Briefcase size={32} /></div>
-								<h3>What I Do</h3>
-								<p>Tier 2/3 support, cloud migrations, M365 deployment, Intune management, security hardening, and IT consulting.</p>
-							</motion.div>
+						<div className="timeline-container">
+							{timelineEvents.sort((a, b) => {
+								const yearA = parseInt(a.year + (a.month ? "0" + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].indexOf(a.month) : "0"));
+								const yearB = parseInt(b.year + (b.month ? "0" + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].indexOf(b.month) : "0"));
+								return yearA - yearB;
+							}).map((event, i) => (
+								<motion.div 
+									key={i}
+									className={`timeline-event ${event.type}`}
+									initial={{ opacity: 0, x: -30 }}
+									whileInView={{ opacity: 1, x: 0 }}
+									transition={{ delay: i * 0.05 }}
+								>
+									<div className="event-date">
+										<Calendar size={14} />
+										{event.month && `${event.month}/`}{event.year}
+									</div>
+									<div className="event-title">{event.title}</div>
+									<div className="event-desc">{event.description}</div>
+								</motion.div>
+							))}
 						</div>
 
 						<div className="charts-section">
@@ -391,10 +457,6 @@ function App() {
 												<stop offset="5%" stopColor="#00b7c3" stopOpacity={0.8}/>
 												<stop offset="95%" stopColor="#00b7c3" stopOpacity={0}/>
 											</linearGradient>
-											<linearGradient id="colorClient" x1="0" y1="0" x2="0" y2="1">
-												<stop offset="5%" stopColor="#8764B8" stopOpacity={0.8}/>
-												<stop offset="95%" stopColor="#8764B8" stopOpacity={0}/>
-											</linearGradient>
 										</defs>
 										<CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
 										<XAxis dataKey="year" stroke="var(--text-secondary)" />
@@ -402,61 +464,23 @@ function App() {
 										<Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)" }} />
 										<Legend />
 										<Area type="monotone" dataKey="projects" stroke="#00b7c3" fillOpacity={1} fill="url(#colorProj)" name="Projects" />
-										<Area type="monotone" dataKey="clients" stroke="#8764B8" fillOpacity={1} fill="url(#colorClient)" name="Clients" />
+										<Area type="monotone" dataKey="clients" stroke="#8764B8" fillOpacity={0.3} fill="#8764B8" name="Clients" />
+										<Area type="monotone" dataKey="tickets" stroke="#0078d4" fillOpacity={0.2} fill="#0078d4" name="Tickets" />
 									</AreaChart>
 								</ResponsiveContainer>
-							</div>
-
-							<div className="chart-container">
-								<ResponsiveContainer width="100%" height={300}>
-									<BarChart data={experienceData}>
-										<CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-										<XAxis dataKey="year" stroke="var(--text-secondary)" />
-										<YAxis stroke="var(--text-secondary)" />
-										<Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)" }} />
-										<Legend />
-										<Bar dataKey="projects" fill="#0078d4" name="Projects" radius={[4, 4, 0, 0]} />
-										<Bar dataKey="clients" fill="#00b7c3" name="Clients" radius={[4, 4, 0, 0]} />
-									</BarChart>
-								</ResponsiveContainer>
-							</div>
-						</div>
-
-						<div className="job-history-section">
-							<h3>Work History</h3>
-							<div className="timeline">
-								{jobHistory.map((job, i) => (
-									<motion.div 
-										key={job.company} 
-										className="timeline-item"
-										initial={{ opacity: 0, x: -30 }}
-										whileInView={{ opacity: 1, x: 0 }}
-										transition={{ delay: i * 0.1 }}
-									>
-										<div className="timeline-dot" />
-										<div className="timeline-content">
-											<h4>{job.role}</h4>
-											<p className="timeline-company">{job.company}</p>
-											<p className="timeline-duration">{job.duration}</p>
-											<div className="timeline-highlights">
-												{job.highlights.map(h => <span key={h}>{h}</span>)}
-											</div>
-										</div>
-									</motion.div>
-								))}
 							</div>
 						</div>
 
 						<div className="certifications-section">
 							<h3>Certifications</h3>
 							<div className="cert-grid">
-								{certifications.map((cert, i) => (
+								{certifications.map((cert) => (
 									<motion.div 
 										key={cert.name} 
 										className="cert-card"
 										initial={{ opacity: 0, scale: 0.8 }}
 										whileInView={{ opacity: 1, scale: 1 }}
-										transition={{ delay: i * 0.1 }}
+transition={{ delay: 0.1 }}
 									>
 										<Award size={24} />
 										<h4>{cert.name}</h4>
@@ -476,13 +500,13 @@ function App() {
 							<p>Expert solutions for your IT needs</p>
 						</motion.div>
 						<div className="services-grid">
-							{services.map((service, i) => (
+							{services.map((service) => (
 								<motion.div 
 									key={service.id}
 									className="service-card"
 									initial={{ opacity: 0, y: 30 }}
 									whileInView={{ opacity: 1, y: 0 }}
-									transition={{ delay: i * 0.1 }}
+									transition={{ delay: 0.1 }}
 									whileHover={{ scale: 1.02, y: -5 }}
 								>
 									<div className="service-icon">{service.icon}</div>
@@ -502,77 +526,78 @@ function App() {
 				<section id="skills" className="section skills">
 					<div className="section-content">
 						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
-							<h2>Skills</h2>
-							<p>Technical expertise</p>
+							<h2>Skills & Expertise</h2>
+							<p>Technical proficiency over time</p>
 						</motion.div>
-						<div className="skills-charts">
-							<div className="chart-container">
-								<ResponsiveContainer width="100%" height={350}>
-									<PieChart>
-										<Pie 
-											data={skillData} 
-											dataKey="value" 
-											nameKey="name"
-											cx="50%" cy="50%" 
-											innerRadius={60} 
-											outerRadius={100}
-											label={({ name, value }) => `${name}: ${value}%`}
-										>
-											{skillData.map((entry) => (
-												<Cell key={entry.name} fill={entry.color} />
+
+						<div className="skilltree-section">
+							<h3>Skill Tree</h3>
+							<div className="skilltree">
+								{Object.entries(skillTree).map(([category, skills]) => (
+									<div key={category} className={`skill-branch ${category}`}>
+										<h4>{category.toUpperCase()}</h4>
+										<div className="skill-nodes">
+											{skills.map((skill) => (
+												<span key={skill} className="skill-node">{skill}</span>
 											))}
-										</Pie>
-										<Tooltip />
-										<Legend />
-									</PieChart>
-								</ResponsiveContainer>
-							</div>
-							<div className="skills-progress">
-								{skills.map((skill, i) => (
-									<motion.div 
-										key={skill.name} 
-										className="skill-item"
-										initial={{ opacity: 0, x: -20 }}
-										whileInView={{ opacity: 1, x: 0 }}
-										transition={{ delay: i * 0.05 }}
-									>
-										<div className="skill-header">
-											{skill.icon}
-											<span>{skill.name}</span>
-											<span className="skill-level">{skill.level}%</span>
 										</div>
-										<div className="skill-bar">
-											<motion.div 
-												className="skill-progress"
-												initial={{ width: 0 }}
-												whileInView={{ width: `${skill.level}%` }}
-											/>
-										</div>
-									</motion.div>
+									</div>
 								))}
 							</div>
 						</div>
-						<div className="tech-distribution">
-							<h3>Technology Focus</h3>
+
+						<div className="skills-visual">
 							<div className="chart-container">
-								<ResponsiveContainer width="100%" height={300}>
-									<PieChart>
-										<Pie 
-											data={technologyDistribution}
-											dataKey="value"
-											nameKey="name"
-											cx="50%" cy="50%"
-											outerRadius={100}
-											label
-										>
-											{technologyDistribution.map((entry) => (
-												<Cell key={entry.name} fill={entry.color} />
-											))}
-										</Pie>
+								<ResponsiveContainer width="100%" height={350}>
+									<RadarChart data={radarData}>
+										<PolarGrid stroke="var(--border)" />
+										<PolarAngleAxis dataKey="subject" stroke="var(--text-secondary)" />
+										<PolarRadiusAxis angle={30} domain={[0, 100]} stroke="var(--text-secondary)" />
+										<Radar name="Proficiency" dataKey="A" stroke="#00b7c3" fill="#00b7c3" fillOpacity={0.3} />
 										<Tooltip />
-										<Legend />
-									</PieChart>
+									</RadarChart>
 								</ResponsiveContainer>
+							</div>
+
+							<div className="skills-timeline">
+								<h3>Proficiency Over Years</h3>
+								<div className="timeline-bars">
+									{skillProficiency.sort((a, b) => b.years - a.years).slice(0, 8).map((skill) => (
+										<div key={skill.skill} className="timeline-skill">
+											<div className="skill-info">
+												<span className="skill-name">{skill.skill}</span>
+												<span className="skill-years">{skill.years} years</span>
+											</div>
+											<div className="skill-bar">
+												<motion.div 
+													className="skill-progress"
+													initial={{ width: 0 }}
+													whileInView={{ width: `${skill.level}%` }}
+												/>
+												<span className="skill-percent">{skill.level}%</span>
+											</div>
+										</div>
+									))}
+								</div>
+							</div>
+						</div>
+
+						<div className="wordcloud-section">
+							<h3>Technology Word Cloud</h3>
+							<div className="word-cloud">
+								{techKeywords.map((word, idx) => (
+									<span 
+										key={word} 
+										className="word-tag"
+										style={{ 
+											fontSize: `${0.7 + (idx % 5) * 0.15}rem`,
+											opacity: 0.6 + (idx % 4) * 0.1,
+											animationDelay: `${(idx % 5) * 0.3}s`
+										}}
+									>
+										{word}
+									</span>
+								))}
 							</div>
 						</div>
 					</div>
@@ -585,13 +610,13 @@ function App() {
 							<p>Recent work & achievements</p>
 						</motion.div>
 						<div className="projects-grid">
-							{projects.map((project, i) => (
+							{projects.map((project) => (
 								<motion.div 
 									key={project.id}
 									className="project-card"
 									initial={{ opacity: 0, y: 30 }}
 									whileInView={{ opacity: 1, y: 0 }}
-									transition={{ delay: i * 0.1 }}
+									transition={{ delay: 0.1 }}
 									whileHover={{ scale: 1.02, y: -5 }}
 								>
 									<div className="project-metric">{project.metric}</div>
@@ -616,7 +641,7 @@ function App() {
 						<div className="contact-grid">
 							<motion.div className="contact-info" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}>
 								<h3>Get In Touch</h3>
-								<p>Ready to discuss your IT needs? Reach out directly or use the form.</p>
+								<p>Ready to discuss your IT needs?</p>
 								<div className="contact-links">
 									<a href="tel:+27752031016"><Phone size={24} />+27 75 203 1016</a>
 									<a href="mailto:custompcrepublic@gmail.com"><Mail size={24} />custompcrepublic@gmail.com</a>
@@ -652,7 +677,7 @@ function App() {
 
 			<footer className="footer">
 				<p>&copy; {new Date().getFullYear()} Daniel R Jacobs. All rights reserved.</p>
-				<p>8+ Years Experience • SC-300 & MS-900 Certified</p>
+				<p>SC-300 & MS-900 Certified • 8+ Years Experience</p>
 			</footer>
 		</div>
 	);

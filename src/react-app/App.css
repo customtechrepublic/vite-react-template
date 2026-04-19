@@ -178,7 +178,7 @@ main { flex: 1; padding-top: 60px; }
 	justify-content: center;
 	position: relative;
 	overflow: hidden;
-	background: radial-gradient(ellipse at center, var(--background-alt) 0%, var(--background) 100%);
+	background: linear-gradient(135deg, #0a0a1a 0%, #0d0d1a 50%, #0a0a1a 100%);
 }
 
 .hero-canvas {
@@ -744,6 +744,237 @@ main { flex: 1; padding-top: 60px; }
 .footer p:first-child {
 	margin-bottom: 0.5rem;
 	color: var(--text);
+}
+
+/* Matrix Canvas */
+.matrix-canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	pointer-events: none;
+}
+
+/* Log Stream */
+.log-panel {
+	position: absolute;
+	top: 50%;
+	right: 5%;
+	transform: translateY(-50%);
+	width: 350px;
+	max-height: 400px;
+	background: rgba(0, 0, 0, 0.8);
+	border: 1px solid var(--accent);
+	border-radius: 8px;
+	padding: 1rem;
+	z-index: 1;
+	overflow: hidden;
+}
+
+.log-stream {
+	font-family: 'Courier New', monospace;
+	font-size: 0.7rem;
+	color: var(--accent);
+	line-height: 1.6;
+}
+
+.log-line {
+	opacity: 0;
+	animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+	to { opacity: 1; }
+}
+
+/* Skill Tree */
+.skilltree-section {
+	margin-bottom: 3rem;
+}
+
+.skilltree {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 1rem;
+	margin-top: 1.5rem;
+}
+
+.skill-branch {
+	padding: 1rem;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	transition: all 0.3s;
+}
+
+.skill-branch:hover {
+	border-color: var(--accent);
+	box-shadow: 0 0 20px var(--glow-accent);
+}
+
+.skill-branch h4 {
+	font-size: 0.75rem;
+	color: var(--accent);
+	margin-bottom: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.skill-nodes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+}
+
+.skill-node {
+	padding: 0.25rem 0.5rem;
+	background: var(--surface-light);
+	border-radius: 4px;
+	font-size: 0.65rem;
+	color: var(--text-secondary);
+	transition: all 0.2s;
+}
+
+.skill-node:hover {
+	background: var(--accent);
+	color: white;
+}
+
+/* Skills Timeline Visual */
+.skills-visual {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2rem;
+	margin-bottom: 3rem;
+}
+
+.timeline-skill {
+	margin-bottom: 1rem;
+}
+
+.skill-info {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 0.4rem;
+}
+
+.skill-name {
+	font-weight: 500;
+	font-size: 0.875rem;
+}
+
+.skill-years {
+	font-size: 0.75rem;
+	color: var(--text-secondary);
+}
+
+.skill-bar {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	height: 20px;
+	background: var(--surface);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.skill-progress {
+	height: 100%;
+	background: linear-gradient(90deg, var(--accent), var(--accent2));
+	border-radius: 4px;
+}
+
+.skill-percent {
+	font-size: 0.75rem;
+	color: var(--accent);
+	min-width: 35px;
+}
+
+/* Word Cloud */
+.wordcloud-section {
+	margin-bottom: 3rem;
+}
+
+.word-cloud {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	justify-content: center;
+	padding: 2rem;
+	background: var(--surface);
+	border-radius: 16px;
+	border: 1px solid var(--border);
+}
+
+.word-tag {
+	padding: 0.4rem 0.8rem;
+	background: var(--surface-light);
+	border-radius: 6px;
+	color: var(--text-secondary);
+	transition: all 0.3s;
+	animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.05); }
+}
+
+.word-tag:hover {
+	background: var(--accent);
+	color: white;
+	transform: scale(1.1);
+}
+
+/* Timeline Events */
+.timeline-container {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1rem;
+	margin-bottom: 3rem;
+}
+
+.timeline-event {
+	padding: 1rem;
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	transition: all 0.3s;
+}
+
+.timeline-event:hover {
+	transform: translateX(5px);
+	border-color: var(--accent);
+}
+
+.timeline-event.cert {
+	border-left: 3px solid var(--accent2);
+}
+
+.timeline-event.job {
+	border-left: 3px solid var(--accent);
+}
+
+.event-date {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	font-size: 0.75rem;
+	color: var(--accent);
+	margin-bottom: 0.4rem;
+}
+
+.event-title {
+	font-size: 0.9rem;
+	font-weight: 600;
+	margin-bottom: 0.25rem;
+}
+
+.event-desc {
+	font-size: 0.8rem;
+	color: var(--text-secondary);
 }
 
 /* Tilt Cards */
