@@ -15,6 +15,23 @@
 	--shadow-lg: rgba(0, 0, 0, 0.12);
 }
 
+[data-theme="dark"] {
+	--primary: #0078d4;
+	--primary-dark: #106ebe;
+	--secondary: #1a1a1a;
+	--accent: #00b7c3;
+	--background: #0d1117;
+	--background-alt: #161b22;
+	--surface: #161b22;
+	--text: #c9d1d9;
+	--text-secondary: #8b949e;
+	--border: #30363d;
+	--success: #3fb950;
+	--error: #f85149;
+	--shadow: rgba(0, 0, 0, 0.3);
+	--shadow-lg: rgba(0, 0, 0, 0.4);
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -57,6 +74,7 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 1rem;
 }
 
 .logo {
@@ -70,6 +88,26 @@ body {
 
 .logo svg {
 	color: var(--primary);
+}
+
+.theme-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	background: var(--background-alt);
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	cursor: pointer;
+	color: var(--text);
+	transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+	background: var(--primary);
+	color: white;
+	border-color: var(--primary);
 }
 
 .desktop-nav {

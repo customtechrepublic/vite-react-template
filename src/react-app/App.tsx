@@ -19,7 +19,9 @@ import {
 	CheckCircle,
 	Menu,
 	X,
-	Cpu
+	Cpu,
+	Sun,
+	Moon
 } from "lucide-react";
 import "./App.css";
 
@@ -39,119 +41,123 @@ const navItems: NavItem[] = [
 ];
 
 const skills = [
-	{ name: "Microsoft 365", icon: <Cloud size={24} />, description: "Exchange Online, SharePoint, Teams, OneDrive, Intune", level: 95 },
-	{ name: "Azure AD", icon: <Shield size={24} />, description: "Conditional Access, MFA, SSO, Identity Protection", level: 90 },
-	{ name: "Exchange Server", icon: <Mail size={24} />, description: "Exchange 2016/2019/Online, DAG, Transport", level: 92 },
-	{ name: "Azure", icon: <Cloud size={24} />, description: "VM, Storage, Networking, Functions, Logic Apps", level: 88 },
-	{ name: "Active Directory", icon: <Server size={24} />, description: "Domain Controllers, GPO, DFS, ADFS", level: 90 },
-	{ name: "PowerShell", icon: <Code size={24} />, description: "Scripting, Automation, Exchange, Azure AD", level: 85 },
-	{ name: "Intune/MEM", icon: <Shield size={24} />, description: "Device Management, MAM, Compliance Policies", level: 87 },
-	{ name: "SQL Server", icon: <Database size={24} />, description: "Administration, Always On,-backup", level: 80 },
+	{ name: "Microsoft 365", icon: <Cloud size={24} />, description: "Exchange, Teams, SharePoint, OneDrive, Intune", level: 95 },
+	{ name: "Azure AD/Entra", icon: <Shield size={24} />, description: "Conditional Access, MFA, SSO, Identity Protection", level: 92 },
+	{ name: "Azure Cloud", icon: <Cloud size={24} />, description: "Virtual Machines, Networking, Defender, Sentinel", level: 90 },
+	{ name: "Intune/MEM", icon: <Shield size={24} />, description: "MDM, MAM, Compliance, Endpoint Security", level: 92 },
+	{ name: "Active Directory", icon: <Server size={24} />, description: "Domain Controllers, GPO, ADFS, Hybrid AD", level: 90 },
+	{ name: "PowerShell/Bash", icon: <Code size={24} />, description: "Scripting, Automation, GraphAPI, YAML", level: 88 },
+	{ name: "Networking", icon: <Shield size={24} />, description: "VLAN, VPN, Firewall, Cisco, Fortinet, Zero Trust", level: 85 },
+	{ name: "Endpoint Security", icon: <Shield size={24} />, description: "Windows, macOS, Linux, Android, iOS", level: 87 },
 ];
 
 const certifications = [
-	"Microsoft 365 Certified: Administrator Expert",
-	"Microsoft Azure Administrator (AZ-104)",
-	"Microsoft 70-345: Exchange Server",
-	"CompTIA Security+",
-	"ITIL Foundation",
+	"SC-300: Microsoft Identity & Access Administrator",
+	"MS-900: Microsoft 365 Fundamentals",
+	"MCSA Windows Server 2016 (70-697)",
+	"CompTIA A+",
 ];
 
 const services = [
 	{
 		id: "tier3-support",
-		title: "Tier 3 Helpdesk Support",
-		description: "Advanced technical support for complex issues escalations from Tier 1/2 support teams. Deep troubleshooting of Exchange, M365, and Azure AD problems.",
+		title: "Tier 2/3 IT Support",
+		description: "Advanced technical support for desktop, server, and cloud systems. Escalations, troubleshooting, and resolution for complex IT issues.",
 		icon: <Headphones size={32} />,
 		features: [
-			"Exchange Server troubleshooting & migration",
-			"Microsoft 365 tenant issues",
-			"Azure AD and identity problems",
-			"Email flow and transport issues",
-			" mailbox permissions and shared mailboxes",
-			"Advanced Teams and SharePoint issues",
+			"Tier 2/3 support escalations",
+			"Desktop & server troubleshooting",
+			"Cloud systems engineering",
+			"Microsoft 365 support",
+			"Intune & endpoint management",
+			"QuickBooks support specialist",
 		],
 	},
 	{
 		id: "azure-projects",
-		title: "Azure/M365 Projects",
-		description: "Planning and implementing Microsoft 365 and Azure solutions for businesses of all sizes. From migrations to new deployments.",
+		title: "Cloud & M365 Projects",
+		description: "Migrations to Microsoft 365 and Azure, implementation of Modern Workplace solutions, and business continuity design.",
 		icon: <Cloud size={32} />,
 		features: [
-			"Microsoft 365 tenant setup",
-			"Exchange Online migration",
-			"Azure AD implementation",
-			"Intune device management",
-			"SharePoint/Teams deployment",
-			"Hybrid Exchange configuration",
+			"Google Workspace to M365 migration",
+			"Azure VM replication & ZTNA",
+			"Intune & Defender deployment",
+			"Teams adoption & training",
+			"Conditional access policies",
+			"Cloud infrastructure design",
 		],
 	},
 	{
 		id: "consulting",
 		title: "IT Consulting",
-		description: "Strategic IT advice and architecture design for Microsoft solutions. Optimize your M365 and Azure environment.",
+		description: "Strategic IT advice and architecture design. Cloud transformation, security hardening, and compliance implementation.",
 		icon: <Briefcase size={32} />,
 		features: [
-			"Architecture design reviews",
-			"Security assessments",
-			"Migration planning",
-			"License optimization",
-			"Compliance recommendations",
-			"Best practices guidance",
+			"Cloud migration planning",
+			"Security & compliance",
+			"Zero Trust architecture",
+			"Azure Well Architected",
+			"IT automation",
+			"Documentation & best practices",
 		],
 	},
 ];
 
 const projects = [
 	{
-		id: "exchange-migration",
-		title: "Exchange 2016 to Exchange Online Migration",
-		description: "Complete hybrid migration for a 500-user organization. Migrated from on-premises Exchange 2016 to Exchange Online with minimal downtime.",
-		tags: ["Exchange Online", "Azure AD Connect", "Hybrid"],
+		id: "workspace-migration",
+		title: "Google Workspace to M365 Migration",
+		description: "Migrated 20+ users from Google Workspace to Microsoft 365. Zero downtime and data loss.",
+		tags: ["M365", "Migration", "Teams"],
 		year: "2024",
 	},
 	{
-		id: "azure-ad-setup",
-		title: "Azure AD Implementation",
-		description: "Implemented Azure AD for a mid-size company with 300 employees. Set up conditional access, MFA, and SSO for 15+ SaaS applications.",
-		tags: ["Azure AD", "Conditional Access", "SSO"],
+		id: "azure-replication",
+		title: "Azure VM Replication & ZTNA",
+		description: "Designed and implemented Azure Virtual Machine replication for business continuity and Zero Trust Network Access.",
+		tags: ["Azure", "ZTNA", "Security"],
 		year: "2024",
 	},
 	{
-		id: "intune-deployment",
-		title: "Intune Device Management",
-		description: "Deployed Intune for device management across 200+ Windows and mobile devices. Implemented compliance policies and MAM.",
-		tags: ["Intune", "MEM", "MAM"],
-		year: "2023",
-	},
-	{
-		id: "sharepoint-migration",
-		title: "SharePoint Online Migration",
-		description: "Migrated 2TB of data from on-premises SharePoint 2016 to SharePoint Online. Implemented proper permissions and metadata.",
-		tags: ["SharePoint", "M365", "Migration"],
-		year: "2023",
-	},
-	{
-		id: "security-hardening",
-		title: "M365 Security Hardening",
-		description: "Comprehensive security assessment and hardening for a financial services company. Implemented zero-trust model with Conditional Access.",
-		tags: ["Security", "Zero Trust", "Compliance"],
+		id: "intune-defender",
+		title: "Intune & Defender ATP Deployment",
+		description: "Secured endpoints using Intune and Defender ATP. Improved threat protection across the organization.",
+		tags: ["Intune", "Defender", "Security"],
 		year: "2024",
 	},
 	{
-		id: "teams-voicemail",
-		title: "Teams Voicemail Migration",
-		description: "Migrated voicemail from on-premises Exchange UM to Exchange Online UM for Teams. Integrated with existing voicemail system.",
-		tags: ["Teams", "Voicemail", "Exchange"],
-		year: "2023",
+		id: "modern-workplace",
+		title: "100+ Modern Workplace Projects",
+		description: "Designed, architected, and delivered 100+ Modern Workplace and Cloud projects as Solutions Architect.",
+		tags: ["Azure AD", "M365", "Intune"],
+		year: "2021-2025",
+	},
+	{
+		id: "teams-adoption",
+		title: "Microsoft Teams Adoption",
+		description: "Led Teams adoption for US-based CPA firm, increasing collaboration efficiency by ~40%.",
+		tags: ["Teams", "SharePoint", "Adoption"],
+		year: "2024",
+	},
+	{
+		id: "hybrid-ad",
+		title: "Hybrid Azure AD Migration",
+		description: "Migrated all company devices to Hybrid Azure AD and Windows ADDS network for Nerospec Group.",
+		tags: ["Azure AD", "Hybrid", "Windows Server"],
+		year: "2017",
 	},
 ];
 
 function App() {
 	const [activeSection, setActiveSection] = useState("home");
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [darkMode, setDarkMode] = useState(false);
 	const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 	const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+
+	useEffect(() => {
+		document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
+	}, [darkMode]);
 
 	useEffect(() => {
 		const handleScroll = () => {
@@ -211,6 +217,13 @@ function App() {
 						<Cpu size={28} />
 						<span>IT Engineer</span>
 					</motion.div>
+					<button
+						className="theme-toggle"
+						onClick={() => setDarkMode(!darkMode)}
+						aria-label="Toggle dark mode"
+					>
+						{darkMode ? <Sun size={20} /> : <Moon size={20} />}
+					</button>
 					<nav className="desktop-nav">
 						{navItems.map((item) => (
 							<button
@@ -263,14 +276,15 @@ function App() {
 							transition={{ duration: 0.6 }}
 						>
 							<p className="hero-greeting">Hello, I'm</p>
-							<h1 className="hero-name">Freelance IT Engineer</h1>
+							<h1 className="hero-name">Daniel Richard Jacobs</h1>
 							<p className="hero-title">
-								Tier 3 Helpdesk & Azure/M365 Project Specialist
+								Tier 3 Helpdesk & Azure/M365 Engineer
 							</p>
 							<p className="hero-description">
-								Expert in Microsoft 365, Exchange Server, Azure Active Directory,
-								and enterprise IT solutions. Providing advanced technical support
-								and infrastructure projects for businesses worldwide.
+								8+ years of experience in enterprise IT support and infrastructure.
+								MS900, SC-300 certified with CompTIA A+ diploma in IT support.
+								Specializing in Microsoft 365, Exchange Server, Azure AD, and
+								advanced technical support escalations.
 							</p>
 							<div className="hero-buttons">
 								<button
@@ -540,6 +554,11 @@ function App() {
 									the form or reach out directly through social media.
 								</p>
 								<div className="contact-links">
+									<a href="mailto:daniel@custompcrepublic.com" className="contact-link">
+										<Mail size={24} />
+										<span>daniel@custompcrepublic.com</span>
+										<ExternalLink size={16} />
+									</a>
 									<a href="#" className="contact-link">
 										<Linkedin size={24} />
 										<span>LinkedIn</span>
