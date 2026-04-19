@@ -80,6 +80,7 @@ body {
 	padding: 1rem 2rem;
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	gap: 2rem;
 }
 
@@ -99,7 +100,6 @@ body {
 .header-links {
 	display: flex;
 	gap: 1.5rem;
-	margin-left: auto;
 }
 
 .header-links a {
@@ -346,7 +346,7 @@ main { flex: 1; padding-top: 60px; }
 }
 
 .section-content {
-	max-width: 1000px;
+	max-width: 1200px;
 	margin: 0 auto;
 	padding: 0 1.5rem;
 }
@@ -446,7 +446,7 @@ main { flex: 1; padding-top: 60px; }
 	top: 0;
 	bottom: 0;
 	width: 2px;
-	background: linear-gradient(to bottom, var(--accent), var(--accent2);
+	background: linear-gradient(to bottom, var(--accent), var(--accent2));
 }
 
 .timeline-item {
@@ -781,10 +781,6 @@ main { flex: 1; padding-top: 60px; }
 
 /* Log Stream */
 .log-panel {
-	display: none;
-}
-
-.log-panel {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -797,7 +793,6 @@ main { flex: 1; padding-top: 60px; }
 	border-radius: 8px;
 	padding: 1rem;
 	margin-top: 2rem;
-}
 	z-index: 1;
 	overflow: hidden;
 }
@@ -931,6 +926,7 @@ main { flex: 1; padding-top: 60px; }
 	flex-wrap: wrap;
 	gap: 0.75rem;
 	justify-content: center;
+	align-items: center;
 	padding: 2rem;
 	background: var(--surface);
 	border-radius: 16px;
@@ -963,7 +959,7 @@ main { flex: 1; padding-top: 60px; }
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 	gap: 1rem;
 	margin-bottom: 3rem;
-	padding: 0 1rem;
+	padding: 0;
 }
 
 .timeline-event {
@@ -1044,14 +1040,22 @@ main { flex: 1; padding-top: 60px; }
 	.hero-name { font-size: 3rem; }
 	.skills-charts { grid-template-columns: 1fr; }
 	.cert-grid { grid-template-columns: repeat(2, 1fr); }
+	.services-grid { grid-template-columns: repeat(2, 1fr); }
+	.projects-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
+	.section { padding: 3rem 1rem; }
 	.desktop-nav, .header-links { display: none; }
 	.mobile-menu-toggle { display: block; }
-	.mobile-nav { display: flex; }
+	.mobile-nav { display: flex; width: 100%; }
 	.hero-name { font-size: 2.5rem; }
 	.hero-stats { flex-direction: column; gap: 1rem; }
+	.stat-box { min-width: unset; width: 100%; }
 	.about-grid, .services-grid, .projects-grid, .contact-grid { grid-template-columns: 1fr; }
+	.contact-grid { gap: 2rem; }
 	.cert-grid { grid-template-columns: repeat(2, 1fr); }
+	.skilltree { grid-template-columns: repeat(2, 1fr); }
+	.skills-visual { grid-template-columns: 1fr; }
+	.log-panel { display: none; }
 }
