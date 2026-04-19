@@ -10,18 +10,17 @@ import {
 	Award,
 	Send,
 	Linkedin,
-	Github,
 	ExternalLink,
 	Server,
 	Shield,
-	Database,
 	Code,
 	CheckCircle,
 	Menu,
 	X,
 	Cpu,
 	Sun,
-	Moon
+	Moon,
+	Phone
 } from "lucide-react";
 import "./App.css";
 
@@ -554,19 +553,24 @@ function App() {
 									the form or reach out directly through social media.
 								</p>
 								<div className="contact-links">
-									<a href="mailto:daniel@custompcrepublic.com" className="contact-link">
-										<Mail size={24} />
-										<span>daniel@custompcrepublic.com</span>
+									<a href="tel:+27752031016" className="contact-link">
+										<Phone size={24} />
+										<span>+27 75 203 1016</span>
 										<ExternalLink size={16} />
 									</a>
-									<a href="#" className="contact-link">
+									<a href="mailto:custompcrepublic@gmail.com" className="contact-link">
+										<Mail size={24} />
+										<span>custompcrepublic@gmail.com</span>
+										<ExternalLink size={16} />
+									</a>
+									<a href="https://linkedin.com/in/daniel-jacobs-b961a8148" className="contact-link">
 										<Linkedin size={24} />
 										<span>LinkedIn</span>
 										<ExternalLink size={16} />
 									</a>
-									<a href="#" className="contact-link">
-										<Github size={24} />
-										<span>GitHub</span>
+									<a href="https://upwork.com/freelancers/~01919773e8e8eed423" className="contact-link">
+										<Briefcase size={24} />
+										<span>Upwork</span>
 										<ExternalLink size={16} />
 									</a>
 								</div>
