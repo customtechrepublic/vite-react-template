@@ -5,7 +5,7 @@ import {
 	XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
 import { 
-	Headphones, Cloud, Mail, Folder, User, Briefcase, Award, Send,
+	Headphones, Cloud, Mail, Folder, Briefcase, Award, Send,
 	Linkedin, Server, Code, CheckCircle, Menu, X,
 	Sun, Moon, Phone, Globe,
 	Activity, TrendingUp, Calendar
@@ -389,18 +389,29 @@ function App() {
 								<div className="stat-box">
 									<TrendingUp size={24} />
 									<span className="stat-value">125+</span>
-									<span className="stat-label">Projects</span>
+									<span className="stat-label">Projects Delivered</span>
 								</div>
 								<div className="stat-box">
-									<User size={24} />
+									<Folder size={24} />
 									<span className="stat-value">58+</span>
-									<span className="stat-label">Clients</span>
+									<span className="stat-label">Organizations</span>
 								</div>
 								<div className="stat-box">
 									<Activity size={24} />
 									<span className="stat-value">8+</span>
-									<span className="stat-label">Years</span>
+									<span className="stat-label">Years XP</span>
 								</div>
+								<div className="stat-box">
+									<CheckCircle size={24} />
+									<span className="stat-value">385+</span>
+									<span className="stat-label">Upwork Hours</span>
+								</div>
+							</div>
+							<div className="hero-badges">
+								<span className="badge">SOC 2 Compliant</span>
+								<span className="badge">MacOS Specialist</span>
+								<span className="badge">MSP Expert</span>
+								<span className="badge">$30/hr Rate</span>
 							</div>
 							<div className="hero-buttons">
 								<button className="btn btn-primary" onClick={() => scrollToSection("contact")}>
