@@ -1,23 +1,23 @@
 {
-	"name": "freelance-engineer-portfolio",
-	"description": "Freelance Tier 3 Helpdesk & Azure/M365 Project Engineer Portfolio",
+	"name": "daniel-r-jacobs-portfolio",
+	"description": "Daniel R Jacobs - Tier 2 IT Support & Cloud Systems Engineer Portfolio",
 	"cloudflare": {
-		"label": "Freelance Engineer Portfolio",
-		"products": [
-			"Workers"
-		],
+		"label": "Daniel R Jacobs Portfolio",
+		"products": ["Workers"],
 		"categories": [],
-		"preview_icon_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/532a5378-9717-4964-385b-5fafd2160200/public",
-		"preview_image_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/ec7f4be5-d1d6-4e94-0851-126341745400/preview",
 		"publish": true
 	},
 	"dependencies": {
 		"hono": "4.11.1",
 		"react": "19.2.1",
 		"react-dom": "19.2.1",
-		"react-router-dom": "7.5.3",
 		"framer-motion": "12.12.0",
-		"lucide-react": "0.511.0"
+		"lucide-react": "0.511.0",
+		"@react-three/fiber": "9.0.0",
+		"@react-three/drei": "^10.0.0",
+		"three": "0.172.0",
+		"recharts": "2.15.0",
+		"canvas-confetti": "1.9.3"
 	},
 	"devDependencies": {
 		"@cloudflare/vite-plugin": "1.15.3",
@@ -25,6 +25,7 @@
 		"@types/node": "24.10.1",
 		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
+		"@types/three": "0.172.0",
 		"@vitejs/plugin-react": "5.1.1",
 		"eslint": "9.39.2",
 		"eslint-plugin-react-hooks": "7.0.1",

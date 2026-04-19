@@ -1,166 +1,219 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, Suspense, useMemo } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { OrbitControls, Stars, Float } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-	Headphones,
-	Cloud,
-	Mail,
-	Folder,
-	User,
-	Briefcase,
-	Award,
-	Send,
-	Linkedin,
-	ExternalLink,
-	Server,
-	Shield,
-	Code,
-	CheckCircle,
-	Menu,
-	X,
-	Cpu,
-	Sun,
-	Moon,
-	Phone
+import { 
+	AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+	XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} from "recharts";
+import { 
+	Headphones, Cloud, Mail, Folder, User, Briefcase, Award, Send,
+	Linkedin, Server, Shield, Code, CheckCircle, Menu, X,
+	Sun, Moon, Phone, Globe, Wifi,
+	Activity, TrendingUp, MousePointer
 } from "lucide-react";
 import "./App.css";
 
-interface NavItem {
-	id: string;
-	label: string;
-	icon: React.ReactNode;
-}
+const skillData = [
+	{ name: "Microsoft 365", value: 95, color: "#0078d4" },
+	{ name: "Azure AD/Entra", value: 92, color: "#0078d4" },
+	{ name: "Azure Cloud", value: 90, color: "#0078d4" },
+	{ name: "Intune/MEM", value: 92, color: "#0078d4" },
+	{ name: "Active Directory", value: 90, color: "#0078d4" },
+	{ name: "PowerShell/Bash", value: 88, color: "#0078d4" },
+	{ name: "Networking", value: 85, color: "#0078d4" },
+	{ name: "Endpoint Security", value: 87, color: "#0078d4" },
+];
 
-const navItems: NavItem[] = [
-	{ id: "home", label: "Home", icon: <User size={20} /> },
-	{ id: "about", label: "About", icon: <Briefcase size={20} /> },
-	{ id: "services", label: "Services", icon: <Headphones size={20} /> },
-	{ id: "skills", label: "Skills", icon: <Award size={20} /> },
-	{ id: "projects", label: "Projects", icon: <Folder size={20} /> },
-	{ id: "contact", label: "Contact", icon: <Mail size={20} /> },
+const experienceData = [
+	{ year: "2016", projects: 15, clients: 8 },
+	{ year: "2017", projects: 25, clients: 12 },
+	{ year: "2018", projects: 40, clients: 18 },
+	{ year: "2019", projects: 60, clients: 25 },
+	{ year: "2020", projects: 75, clients: 30 },
+	{ year: "2021", projects: 90, clients: 40 },
+	{ year: "2022", projects: 100, clients: 45 },
+	{ year: "2023", projects: 110, clients: 50 },
+	{ year: "2024", projects: 120, clients: 55 },
+];
+
+const technologyDistribution = [
+	{ name: "Microsoft 365", value: 35, color: "#0078d4" },
+	{ name: "Azure", value: 25, color: "#00809F" },
+	{ name: "Intune", value: 20, color: "#00b7c3" },
+	{ name: "Security", value: 15, color: "#8764B8" },
+	{ name: "Other", value: 5, color: "#323130" },
+];
+
+const jobHistory = [
+	{
+		company: "Logics Technology",
+		role: "Tier 2 IT Support Engineer",
+		duration: "Feb 2026 – Apr 2026",
+		highlights: ["Automated workflows", "Copilot integration", "Contract extension"]
+	},
+	{
+		company: "US-based CPA Firm",
+		role: "Lead Technology Consultant",
+		duration: "Aug 2024 – Feb 2025",
+		highlights: ["20+ user M365 migration", "Azure VM ZTNA", "40% Teams efficiency"]
+	},
+	{
+		company: "Microsoft",
+		role: "Customer Service Ambassador",
+		duration: "Mar 2023 – Jul 2024",
+		highlights: ["5-star rating", "85% bonus targets", "MacOS specialist"]
+	},
+	{
+		company: "Support Adventure Ltd",
+		role: "IT Support Engineer",
+		duration: "Apr 2021 – Dec 2022",
+		highlights: ["30+ digital projects", "11+ tickets daily", "Exec training"]
+	},
+	{
+		company: "CloudScale365",
+		role: "Technical Support Engineer",
+		duration: "2018 – 2021",
+		highlights: ["100+ tickets weekly", "100+ projects delivered", "Solutions Architect"]
+	},
+	{
+		company: "Nerospec Group",
+		role: "Junior IT Manager",
+		duration: "Sep 2017 – Jul 2018",
+		highlights: ["Hybrid AD migration", "Teams deployment", "Multi-office support"]
+	},
+];
+
+const certifications = [
+	{ name: "SC-300", issuer: "Microsoft", year: "2022" },
+	{ name: "MS-900", issuer: "Microsoft", year: "2024" },
+	{ name: "MCSA 70-697", issuer: "Microsoft", year: "2017" },
+	{ name: "CompTIA A+", issuer: "CompTIA", year: "2016" },
 ];
 
 const skills = [
 	{ name: "Microsoft 365", icon: <Cloud size={24} />, description: "Exchange, Teams, SharePoint, OneDrive, Intune", level: 95 },
 	{ name: "Azure AD/Entra", icon: <Shield size={24} />, description: "Conditional Access, MFA, SSO, Identity Protection", level: 92 },
-	{ name: "Azure Cloud", icon: <Cloud size={24} />, description: "Virtual Machines, Networking, Defender, Sentinel", level: 90 },
+	{ name: "Azure Cloud", icon: <Cloud size={24} />, description: "VM, Networking, Defender, Sentinel", level: 90 },
 	{ name: "Intune/MEM", icon: <Shield size={24} />, description: "MDM, MAM, Compliance, Endpoint Security", level: 92 },
 	{ name: "Active Directory", icon: <Server size={24} />, description: "Domain Controllers, GPO, ADFS, Hybrid AD", level: 90 },
-	{ name: "PowerShell/Bash", icon: <Code size={24} />, description: "Scripting, Automation, GraphAPI, YAML", level: 88 },
-	{ name: "Networking", icon: <Shield size={24} />, description: "VLAN, VPN, Firewall, Cisco, Fortinet, Zero Trust", level: 85 },
-	{ name: "Endpoint Security", icon: <Shield size={24} />, description: "Windows, macOS, Linux, Android, iOS", level: 87 },
-];
-
-const certifications = [
-	"SC-300: Microsoft Identity & Access Administrator",
-	"MS-900: Microsoft 365 Fundamentals",
-	"MCSA Windows Server 2016 (70-697)",
-	"CompTIA A+",
+	{ name: "PowerShell/Bash", icon: <Code size={24} />, description: "Scripting, Automation, GraphAPI", level: 88 },
+	{ name: "Networking", icon: <Wifi size={24} />, description: "VLAN, VPN, Firewall, Zero Trust", level: 85 },
+	{ name: "Endpoint Security", icon: <Shield size={24} />, description: "Windows, macOS, Linux, Android", level: 87 },
 ];
 
 const services = [
 	{
 		id: "tier3-support",
 		title: "Tier 2/3 IT Support",
-		description: "Advanced technical support for desktop, server, and cloud systems. Escalations, troubleshooting, and resolution for complex IT issues.",
+		description: "Advanced technical support for desktop, server, and cloud systems.",
 		icon: <Headphones size={32} />,
-		features: [
-			"Tier 2/3 support escalations",
-			"Desktop & server troubleshooting",
-			"Cloud systems engineering",
-			"Microsoft 365 support",
-			"Intune & endpoint management",
-			"QuickBooks support specialist",
-		],
+		features: ["Tier 2/3 escalations", "Desktop & server", "Cloud engineering", "Intune support", "QuickBooks support"],
 	},
 	{
 		id: "azure-projects",
 		title: "Cloud & M365 Projects",
-		description: "Migrations to Microsoft 365 and Azure, implementation of Modern Workplace solutions, and business continuity design.",
+		description: "Migrations to Microsoft 365 and Azure, Modern Workplace solutions.",
 		icon: <Cloud size={32} />,
-		features: [
-			"Google Workspace to M365 migration",
-			"Azure VM replication & ZTNA",
-			"Intune & Defender deployment",
-			"Teams adoption & training",
-			"Conditional access policies",
-			"Cloud infrastructure design",
-		],
+		features: ["Google to M365", "Azure VM ZTNA", "Intune/Defender", "Teams adoption", "Cloud design"],
 	},
 	{
 		id: "consulting",
 		title: "IT Consulting",
-		description: "Strategic IT advice and architecture design. Cloud transformation, security hardening, and compliance implementation.",
+		description: "Strategic IT advice, cloud transformation, and security.",
 		icon: <Briefcase size={32} />,
-		features: [
-			"Cloud migration planning",
-			"Security & compliance",
-			"Zero Trust architecture",
-			"Azure Well Architected",
-			"IT automation",
-			"Documentation & best practices",
-		],
+		features: ["Cloud migration", "Zero Trust", "Security", "Automation", "Best practices"],
 	},
 ];
 
 const projects = [
-	{
-		id: "workspace-migration",
-		title: "Google Workspace to M365 Migration",
-		description: "Migrated 20+ users from Google Workspace to Microsoft 365. Zero downtime and data loss.",
-		tags: ["M365", "Migration", "Teams"],
-		year: "2024",
-	},
-	{
-		id: "azure-replication",
-		title: "Azure VM Replication & ZTNA",
-		description: "Designed and implemented Azure Virtual Machine replication for business continuity and Zero Trust Network Access.",
-		tags: ["Azure", "ZTNA", "Security"],
-		year: "2024",
-	},
-	{
-		id: "intune-defender",
-		title: "Intune & Defender ATP Deployment",
-		description: "Secured endpoints using Intune and Defender ATP. Improved threat protection across the organization.",
-		tags: ["Intune", "Defender", "Security"],
-		year: "2024",
-	},
-	{
-		id: "modern-workplace",
-		title: "100+ Modern Workplace Projects",
-		description: "Designed, architected, and delivered 100+ Modern Workplace and Cloud projects as Solutions Architect.",
-		tags: ["Azure AD", "M365", "Intune"],
-		year: "2021-2025",
-	},
-	{
-		id: "teams-adoption",
-		title: "Microsoft Teams Adoption",
-		description: "Led Teams adoption for US-based CPA firm, increasing collaboration efficiency by ~40%.",
-		tags: ["Teams", "SharePoint", "Adoption"],
-		year: "2024",
-	},
-	{
-		id: "hybrid-ad",
-		title: "Hybrid Azure AD Migration",
-		description: "Migrated all company devices to Hybrid Azure AD and Windows ADDS network for Nerospec Group.",
-		tags: ["Azure AD", "Hybrid", "Windows Server"],
-		year: "2017",
-	},
+	{ id: "workspace-migration", title: "Google Workspace to M365", desc: "20+ users migrated, zero downtime", tags: ["M365", "Migration"], year: "2024", metric: "100%" },
+	{ id: "azure-replication", title: "Azure VM & ZTNA", desc: "Business continuity design", tags: ["Azure", "ZTNA"], year: "2024", metric: "99.9%" },
+	{ id: "intune-defender", title: "Intune & Defender", desc: "Endpoint security deployment", tags: ["Security"], year: "2024", metric: "200+" },
+	{ id: "modern-workplace", title: "Modern Workplace", desc: "100+ projects delivered", tags: ["Cloud"], year: "2021-2025", metric: "100+" },
+	{ id: "teams-adoption", title: "Teams Adoption", desc: "40% efficiency increase", tags: ["Teams"], year: "2024", metric: "40%" },
+	{ id: "hybrid-ad", title: "Hybrid Azure AD", desc: "Full migration", tags: ["Azure AD"], year: "2017", metric: "50+" },
 ];
+
+function DataCenterBackground() {
+	const gridRef = useRef<THREE.Group>(null);
+	
+	useFrame(({ clock }) => {
+		if (gridRef.current) {
+			gridRef.current.rotation.x = clock.getElapsedTime() * 0.02;
+			gridRef.current.rotation.y = clock.getElapsedTime() * 0.01;
+		}
+	});
+
+	const servers = useMemo(() => {
+		const coords = [
+			[-5,-3,-2], [3,-2,4], [-2,1,5], [4,2,-3], [-4,0,1],
+			[2,-1,-4], [0,3,2], [-3,-1,-1], [5,-2,0], [-1,2,-3],
+			[1,-3,3], [-5,1,-2], [3,0,1], [-2,-2,4], [4,-1,-1],
+			[0,1,-4], [-3,2,0], [2,3,-2], [-1,-3,2], [5,1,3]
+		];
+		return coords.map((pos, idx) => ({
+			position: pos as [number, number, number],
+			scale: 0.15 + (idx % 5) * 0.04,
+			color: idx % 2 === 0 ? "#00b7c3" : "#8764B8",
+		}));
+	}, []);
+
+	return (
+		<group ref={gridRef}>
+			<Stars radius={50} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
+			{/* Server racks */}
+			{servers.map((server, i) => (
+				<Float key={i} speed={1} rotationIntensity={0.2} floatIntensity={0.5}>
+					<mesh position={server.position} scale={server.scale}>
+						<boxGeometry args={[1, 1.5, 0.5]} />
+						<meshStandardMaterial 
+							color="#1a1a2e" 
+							emissive={server.color}
+							emissiveIntensity={0.3}
+							metalness={0.8}
+							roughness={0.2}
+						/>
+					</mesh>
+				</Float>
+			))}
+			{/* LED strips */}
+			<mesh position={[0, -5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+				<planeGeometry args={[30, 30]} />
+				<meshBasicMaterial color="#0a0a1a" transparent opacity={0.9} />
+			</mesh>
+			<pointLight position={[0, 5, 0]} intensity={0.5} color="#00b7c3" />
+			<pointLight position={[-5, 3, 5]} intensity={0.3} color="#8764B8" />
+			<pointLight position={[5, 3, -5]} intensity={0.3} color="#0078d4" />
+		</group>
+	);
+}
 
 function App() {
 	const [activeSection, setActiveSection] = useState("home");
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-	const [darkMode, setDarkMode] = useState(false);
+	const [darkMode, setDarkMode] = useState(true);
+	const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 	const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 	const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		document.documentElement.setAttribute("data-theme", darkMode ? "dark" : "light");
 	}, [darkMode]);
 
 	useEffect(() => {
+		const handleMouseMove = (e: MouseEvent) => {
+			setMousePos({ x: e.clientX, y: e.clientY });
+		};
+		window.addEventListener("mousemove", handleMouseMove);
+		return () => window.removeEventListener("mousemove", handleMouseMove);
+	}, []);
+
+	useEffect(() => {
 		const handleScroll = () => {
-			const sections = navItems.map((item) => item.id);
+			const sections = ["home", "about", "services", "skills", "projects", "contact"];
 			for (const section of sections.reverse()) {
 				const element = document.getElementById(section);
 				if (element) {
@@ -179,9 +232,7 @@ function App() {
 	const scrollToSection = (id: string) => {
 		setMobileMenuOpen(false);
 		const element = document.getElementById(id);
-		if (element) {
-			element.scrollIntoView({ behavior: "smooth" });
-		}
+		if (element) element.scrollIntoView({ behavior: "smooth" });
 	};
 
 	const handleFormSubmit = async (e: React.FormEvent) => {
@@ -196,49 +247,52 @@ function App() {
 			if (response.ok) {
 				setFormStatus("success");
 				setFormData({ name: "", email: "", message: "" });
-			} else {
-				setFormStatus("error");
-			}
-		} catch {
-			setFormStatus("error");
-		}
+			} else setFormStatus("error");
+		} catch { setFormStatus("error"); }
 	};
 
 	return (
-		<div className="app">
+		<div className="app" ref={containerRef}>
+			<motion.div 
+				className="custom-cursor"
+				style={{ left: mousePos.x - 10, top: mousePos.y - 10 }}
+			/>
+
 			<header className="header">
 				<div className="header-content">
-					<motion.div
-						className="logo"
-						initial={{ opacity: 0, x: -20 }}
+					<motion.div 
+						className="logo" 
+						initial={{ opacity: 0, x: -20 }} 
 						animate={{ opacity: 1, x: 0 }}
 					>
-						<Cpu size={28} />
-						<span>IT Engineer</span>
+						<Server size={28} />
+						<span>Daniel R Jacobs</span>
 					</motion.div>
-					<button
-						className="theme-toggle"
-						onClick={() => setDarkMode(!darkMode)}
-						aria-label="Toggle dark mode"
-					>
+					<div className="header-links">
+						<a href="https://www.custompcrepublic.com" target="_blank" rel="noopener">
+							<Globe size={18} />
+							www.custompcrepublic.com
+						</a>
+						<a href="https://danieljacobs.custompcrepublic.com" target="_blank" rel="noopener">
+							<Folder size={18} />
+							Portfolio
+						</a>
+					</div>
+					<button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
 						{darkMode ? <Sun size={20} /> : <Moon size={20} />}
 					</button>
 					<nav className="desktop-nav">
-						{navItems.map((item) => (
-							<button
-								key={item.id}
-								className={`nav-item ${activeSection === item.id ? "active" : ""}`}
-								onClick={() => scrollToSection(item.id)}
+						{["home", "about", "services", "skills", "projects", "contact"].map((item) => (
+							<button 
+								key={item} 
+								className={`nav-item ${activeSection === item ? "active" : ""}`}
+								onClick={() => scrollToSection(item)}
 							>
-								{item.icon}
-								<span>{item.label}</span>
+								{item.charAt(0).toUpperCase() + item.slice(1)}
 							</button>
 						))}
 					</nav>
-					<button
-						className="mobile-menu-toggle"
-						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-					>
+					<button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
 						{mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
 					</button>
 				</div>
@@ -246,20 +300,10 @@ function App() {
 
 			<AnimatePresence>
 				{mobileMenuOpen && (
-					<motion.div
-						className="mobile-nav"
-						initial={{ opacity: 0, y: -20 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -20 }}
-					>
-						{navItems.map((item) => (
-							<button
-								key={item.id}
-								className={`nav-item ${activeSection === item.id ? "active" : ""}`}
-								onClick={() => scrollToSection(item.id)}
-							>
-								{item.icon}
-								<span>{item.label}</span>
+					<motion.div className="mobile-nav" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+						{["home", "about", "services", "skills", "projects", "contact"].map((item) => (
+							<button key={item} className={`nav-item ${activeSection === item ? "active" : ""}`} onClick={() => scrollToSection(item)}>
+								{item.charAt(0).toUpperCase() + item.slice(1)}
 							</button>
 						))}
 					</motion.div>
@@ -268,177 +312,185 @@ function App() {
 
 			<main>
 				<section id="home" className="hero">
+					<Canvas className="hero-canvas">
+						<Suspense fallback={null}>
+							<DataCenterBackground />
+						</Suspense>
+						<OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+					</Canvas>
 					<div className="hero-content">
-						<motion.div
-							initial={{ opacity: 0, y: 30 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6 }}
-						>
+						<motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
 							<p className="hero-greeting">Hello, I'm</p>
-							<h1 className="hero-name">Daniel Richard Jacobs</h1>
+							<h1 className="hero-name">Daniel R Jacobs</h1>
 							<p className="hero-title">
-								Tier 3 Helpdesk & Azure/M365 Engineer
+								Tier 2 IT Support Engineer • Cloud Systems Engineer
 							</p>
 							<p className="hero-description">
-								8+ years of experience in enterprise IT support and infrastructure.
-								MS900, SC-300 certified with CompTIA A+ diploma in IT support.
-								Specializing in Microsoft 365, Exchange Server, Azure AD, and
-								advanced technical support escalations.
+								8+ years of enterprise IT experience. SC-300 & MS-900 certified.
+								Specializing in Microsoft 365, Azure, and cloud infrastructure.
 							</p>
-							<div className="hero-buttons">
-								<button
-									className="btn btn-primary"
-									onClick={() => scrollToSection("contact")}
-								>
-									<Send size={18} />
-									Get In Touch
-								</button>
-								<button
-									className="btn btn-secondary"
-									onClick={() => scrollToSection("projects")}
-								>
-									<Folder size={18} />
-									View Projects
-								</button>
+							<div className="hero-stats">
+								<div className="stat-box">
+									<TrendingUp size={24} />
+									<span className="stat-value">120+</span>
+									<span className="stat-label">Projects</span>
+								</div>
+								<div className="stat-box">
+									<User size={24} />
+									<span className="stat-value">55+</span>
+									<span className="stat-label">Clients</span>
+								</div>
+								<div className="stat-box">
+									<Activity size={24} />
+									<span className="stat-value">8+</span>
+									<span className="stat-label">Years</span>
+								</div>
 							</div>
-						</motion.div>
-						<motion.div
-							className="hero-visual"
-							initial={{ opacity: 0, scale: 0.8 }}
-							animate={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.6, delay: 0.2 }}
-						>
-							<div className="hero-cards">
-								<motion.div
-									className="hero-card"
-									animate={{ y: [0, -10, 0] }}
-									transition={{ duration: 3, repeat: Infinity }}
-								>
-									<Cloud size={32} />
-									<span>Azure/M365</span>
-								</motion.div>
-								<motion.div
-									className="hero-card"
-									animate={{ y: [0, -10, 0] }}
-									transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-								>
-									<Mail size={32} />
-									<span>Exchange</span>
-								</motion.div>
-								<motion.div
-									className="hero-card"
-									animate={{ y: [0, -10, 0] }}
-									transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-								>
-									<Shield size={32} />
-									<span>Security</span>
-								</motion.div>
+							<div className="hero-buttons">
+								<button className="btn btn-primary" onClick={() => scrollToSection("contact")}>
+									<Send size={18} /> Get In Touch
+								</button>
+								<button className="btn btn-secondary" onClick={() => scrollToSection("projects")}>
+									<Folder size={18} /> View Projects
+								</button>
 							</div>
 						</motion.div>
 					</div>
+					<motion.div className="hero-scroll-indicator" animate={{ y: [0, 10, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+						<MousePointer size={24} />
+					</motion.div>
 				</section>
 
 				<section id="about" className="section about">
 					<div className="section-content">
-						<motion.div
-							className="section-header"
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-						>
+						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
 							<h2>About Me</h2>
-							<p>Get to know my expertise and background</p>
+							<p>Experience that delivers results</p>
 						</motion.div>
+
 						<div className="about-grid">
-							<motion.div
-								className="about-card"
-								initial={{ opacity: 0, x: -30 }}
-								whileInView={{ opacity: 1, x: 0 }}
-								viewport={{ once: true }}
-							>
-								<div className="about-icon">
-									<User size={32} />
-								</div>
+							<motion.div className="about-card" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}>
+								<div className="about-icon"><User size={32} /></div>
 								<h3>Who I Am</h3>
-								<p>
-									A dedicated IT professional with extensive experience in
-									Microsoft technologies. Specializing in Tier 3 helpdesk support
-									and delivering complex Azure/M365 projects for enterprise clients.
-								</p>
+								<p>8+ years experience in IT systems support, Microsoft 365 & Azure cloud, and cybersecurity. Passionate about scalable, secure solutions.</p>
 							</motion.div>
-							<motion.div
-								className="about-card"
-								initial={{ opacity: 0, x: 30 }}
-								whileInView={{ opacity: 1, x: 0 }}
-								viewport={{ once: true }}
-							>
-								<div className="about-icon">
-									<Briefcase size={32} />
-								</div>
+							<motion.div className="about-card" initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}>
+								<div className="about-icon"><Briefcase size={32} /></div>
 								<h3>What I Do</h3>
-								<p>
-									I provide advanced technical support and implement robust IT
-									solutions. From troubleshooting complex Exchange issues to
-									designing and deploying complete Microsoft 365 environments.
-								</p>
+								<p>Tier 2/3 support, cloud migrations, M365 deployment, Intune management, security hardening, and IT consulting.</p>
 							</motion.div>
 						</div>
-						<motion.div
-							className="certifications"
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-						>
-							<h3>Certifications</h3>
-							<div className="cert-badges">
-								{certifications.map((cert, index) => (
-									<motion.div
-										key={cert}
-										className="cert-badge"
-										initial={{ opacity: 0, scale: 0.8 }}
-										whileInView={{ opacity: 1, scale: 1 }}
-										viewport={{ once: true }}
-										transition={{ delay: index * 0.1 }}
+
+						<div className="charts-section">
+							<h3>Experience Growth</h3>
+							<div className="chart-container">
+								<ResponsiveContainer width="100%" height={300}>
+									<AreaChart data={experienceData}>
+										<defs>
+											<linearGradient id="colorProj" x1="0" y1="0" x2="0" y2="1">
+												<stop offset="5%" stopColor="#00b7c3" stopOpacity={0.8}/>
+												<stop offset="95%" stopColor="#00b7c3" stopOpacity={0}/>
+											</linearGradient>
+											<linearGradient id="colorClient" x1="0" y1="0" x2="0" y2="1">
+												<stop offset="5%" stopColor="#8764B8" stopOpacity={0.8}/>
+												<stop offset="95%" stopColor="#8764B8" stopOpacity={0}/>
+											</linearGradient>
+										</defs>
+										<CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+										<XAxis dataKey="year" stroke="var(--text-secondary)" />
+										<YAxis stroke="var(--text-secondary)" />
+										<Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)" }} />
+										<Legend />
+										<Area type="monotone" dataKey="projects" stroke="#00b7c3" fillOpacity={1} fill="url(#colorProj)" name="Projects" />
+										<Area type="monotone" dataKey="clients" stroke="#8764B8" fillOpacity={1} fill="url(#colorClient)" name="Clients" />
+									</AreaChart>
+								</ResponsiveContainer>
+							</div>
+
+							<div className="chart-container">
+								<ResponsiveContainer width="100%" height={300}>
+									<BarChart data={experienceData}>
+										<CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+										<XAxis dataKey="year" stroke="var(--text-secondary)" />
+										<YAxis stroke="var(--text-secondary)" />
+										<Tooltip contentStyle={{ background: "var(--surface)", border: "1px solid var(--border)" }} />
+										<Legend />
+										<Bar dataKey="projects" fill="#0078d4" name="Projects" radius={[4, 4, 0, 0]} />
+										<Bar dataKey="clients" fill="#00b7c3" name="Clients" radius={[4, 4, 0, 0]} />
+									</BarChart>
+								</ResponsiveContainer>
+							</div>
+						</div>
+
+						<div className="job-history-section">
+							<h3>Work History</h3>
+							<div className="timeline">
+								{jobHistory.map((job, i) => (
+									<motion.div 
+										key={job.company} 
+										className="timeline-item"
+										initial={{ opacity: 0, x: -30 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ delay: i * 0.1 }}
 									>
-										<Award size={18} />
-										<span>{cert}</span>
+										<div className="timeline-dot" />
+										<div className="timeline-content">
+											<h4>{job.role}</h4>
+											<p className="timeline-company">{job.company}</p>
+											<p className="timeline-duration">{job.duration}</p>
+											<div className="timeline-highlights">
+												{job.highlights.map(h => <span key={h}>{h}</span>)}
+											</div>
+										</div>
 									</motion.div>
 								))}
 							</div>
-						</motion.div>
+						</div>
+
+						<div className="certifications-section">
+							<h3>Certifications</h3>
+							<div className="cert-grid">
+								{certifications.map((cert, i) => (
+									<motion.div 
+										key={cert.name} 
+										className="cert-card"
+										initial={{ opacity: 0, scale: 0.8 }}
+										whileInView={{ opacity: 1, scale: 1 }}
+										transition={{ delay: i * 0.1 }}
+									>
+										<Award size={24} />
+										<h4>{cert.name}</h4>
+										<p>{cert.issuer}</p>
+										<span>{cert.year}</span>
+									</motion.div>
+								))}
+							</div>
+						</div>
 					</div>
 				</section>
 
 				<section id="services" className="section services">
 					<div className="section-content">
-						<motion.div
-							className="section-header"
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-						>
+						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
 							<h2>Services</h2>
 							<p>Expert solutions for your IT needs</p>
 						</motion.div>
 						<div className="services-grid">
-							{services.map((service, index) => (
-								<motion.div
+							{services.map((service, i) => (
+								<motion.div 
 									key={service.id}
 									className="service-card"
 									initial={{ opacity: 0, y: 30 }}
 									whileInView={{ opacity: 1, y: 0 }}
-									viewport={{ once: true }}
-									transition={{ delay: index * 0.1 }}
+									transition={{ delay: i * 0.1 }}
+									whileHover={{ scale: 1.02, y: -5 }}
 								>
 									<div className="service-icon">{service.icon}</div>
 									<h3>{service.title}</h3>
 									<p>{service.description}</p>
 									<ul>
-										{service.features.map((feature) => (
-											<li key={feature}>
-												<CheckCircle size={16} />
-												<span>{feature}</span>
-											</li>
+										{service.features.map(f => (
+											<li key={f}><CheckCircle size={14} /> {f}</li>
 										))}
 									</ul>
 								</motion.div>
@@ -449,80 +501,106 @@ function App() {
 
 				<section id="skills" className="section skills">
 					<div className="section-content">
-						<motion.div
-							className="section-header"
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-						>
+						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
 							<h2>Skills</h2>
-							<p>Technical expertise and technologies</p>
+							<p>Technical expertise</p>
 						</motion.div>
-						<div className="skills-grid">
-							{skills.map((skill, index) => (
-								<motion.div
-									key={skill.name}
-									className="skill-card"
-									initial={{ opacity: 0, scale: 0.9 }}
-									whileInView={{ opacity: 1, scale: 1 }}
-									viewport={{ once: true }}
-									transition={{ delay: index * 0.05 }}
-								>
-									<div className="skill-header">
-										<div className="skill-icon">{skill.icon}</div>
-										<div className="skill-info">
-											<h4>{skill.name}</h4>
-											<p>{skill.description}</p>
+						<div className="skills-charts">
+							<div className="chart-container">
+								<ResponsiveContainer width="100%" height={350}>
+									<PieChart>
+										<Pie 
+											data={skillData} 
+											dataKey="value" 
+											nameKey="name"
+											cx="50%" cy="50%" 
+											innerRadius={60} 
+											outerRadius={100}
+											label={({ name, value }) => `${name}: ${value}%`}
+										>
+											{skillData.map((entry) => (
+												<Cell key={entry.name} fill={entry.color} />
+											))}
+										</Pie>
+										<Tooltip />
+										<Legend />
+									</PieChart>
+								</ResponsiveContainer>
+							</div>
+							<div className="skills-progress">
+								{skills.map((skill, i) => (
+									<motion.div 
+										key={skill.name} 
+										className="skill-item"
+										initial={{ opacity: 0, x: -20 }}
+										whileInView={{ opacity: 1, x: 0 }}
+										transition={{ delay: i * 0.05 }}
+									>
+										<div className="skill-header">
+											{skill.icon}
+											<span>{skill.name}</span>
+											<span className="skill-level">{skill.level}%</span>
 										</div>
-									</div>
-									<div className="skill-bar">
-										<motion.div
-											className="skill-progress"
-											initial={{ width: 0 }}
-											whileInView={{ width: `${skill.level}%` }}
-											viewport={{ once: true }}
-											transition={{ duration: 1, delay: 0.2 }}
-										/>
-									</div>
-								</motion.div>
-							))}
+										<div className="skill-bar">
+											<motion.div 
+												className="skill-progress"
+												initial={{ width: 0 }}
+												whileInView={{ width: `${skill.level}%` }}
+											/>
+										</div>
+									</motion.div>
+								))}
+							</div>
+						</div>
+						<div className="tech-distribution">
+							<h3>Technology Focus</h3>
+							<div className="chart-container">
+								<ResponsiveContainer width="100%" height={300}>
+									<PieChart>
+										<Pie 
+											data={technologyDistribution}
+											dataKey="value"
+											nameKey="name"
+											cx="50%" cy="50%"
+											outerRadius={100}
+											label
+										>
+											{technologyDistribution.map((entry) => (
+												<Cell key={entry.name} fill={entry.color} />
+											))}
+										</Pie>
+										<Tooltip />
+										<Legend />
+									</PieChart>
+								</ResponsiveContainer>
+							</div>
 						</div>
 					</div>
 				</section>
 
 				<section id="projects" className="section projects">
 					<div className="section-content">
-						<motion.div
-							className="section-header"
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-						>
+						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
 							<h2>Projects</h2>
-							<p>Recent work and case studies</p>
+							<p>Recent work & achievements</p>
 						</motion.div>
 						<div className="projects-grid">
-							{projects.map((project, index) => (
-								<motion.div
+							{projects.map((project, i) => (
+								<motion.div 
 									key={project.id}
 									className="project-card"
 									initial={{ opacity: 0, y: 30 }}
 									whileInView={{ opacity: 1, y: 0 }}
-									viewport={{ once: true }}
-									transition={{ delay: index * 0.1 }}
+									transition={{ delay: i * 0.1 }}
+									whileHover={{ scale: 1.02, y: -5 }}
 								>
-									<div className="project-header">
-										<h3>{project.title}</h3>
-										<span className="project-year">{project.year}</span>
-									</div>
-									<p>{project.description}</p>
+									<div className="project-metric">{project.metric}</div>
+									<h3>{project.title}</h3>
+									<p>{project.desc}</p>
 									<div className="project-tags">
-										{project.tags.map((tag) => (
-											<span key={tag} className="tag">
-												{tag}
-											</span>
-										))}
+										{project.tags.map(t => <span key={t}>{t}</span>)}
 									</div>
+									<span className="project-year">{project.year}</span>
 								</motion.div>
 							))}
 						</div>
@@ -531,121 +609,41 @@ function App() {
 
 				<section id="contact" className="section contact">
 					<div className="section-content">
-						<motion.div
-							className="section-header"
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true }}
-						>
+						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
 							<h2>Contact</h2>
-							<p>Get in touch for your IT needs</p>
+							<p>Let's connect</p>
 						</motion.div>
 						<div className="contact-grid">
-							<motion.div
-								className="contact-info"
-								initial={{ opacity: 0, x: -30 }}
-								whileInView={{ opacity: 1, x: 0 }}
-								viewport={{ once: true }}
-							>
-								<h3>Let's Connect</h3>
-								<p>
-									Ready to discuss your Azure or Microsoft 365 needs? Fill out
-									the form or reach out directly through social media.
-								</p>
+							<motion.div className="contact-info" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}>
+								<h3>Get In Touch</h3>
+								<p>Ready to discuss your IT needs? Reach out directly or use the form.</p>
 								<div className="contact-links">
-									<a href="tel:+27752031016" className="contact-link">
-										<Phone size={24} />
-										<span>+27 75 203 1016</span>
-										<ExternalLink size={16} />
-									</a>
-									<a href="mailto:custompcrepublic@gmail.com" className="contact-link">
-										<Mail size={24} />
-										<span>custompcrepublic@gmail.com</span>
-										<ExternalLink size={16} />
-									</a>
-									<a href="https://linkedin.com/in/daniel-jacobs-b961a8148" className="contact-link">
-										<Linkedin size={24} />
-										<span>LinkedIn</span>
-										<ExternalLink size={16} />
-									</a>
-									<a href="https://upwork.com/freelancers/~01919773e8e8eed423" className="contact-link">
-										<Briefcase size={24} />
-										<span>Upwork</span>
-										<ExternalLink size={16} />
-									</a>
+									<a href="tel:+27752031016"><Phone size={24} />+27 75 203 1016</a>
+									<a href="mailto:custompcrepublic@gmail.com"><Mail size={24} />custompcrepublic@gmail.com</a>
+									<a href="https://linkedin.com/in/daniel-jacobs-b961a8148"><Linkedin size={24} />LinkedIn</a>
+									<a href="https://upwork.com/freelancers/~01919773e8e8eed423"><Briefcase size={24} />Upwork</a>
+									<a href="https://www.custompcrepublic.com"><Globe size={24} />Website</a>
+									<a href="https://danieljacobs.custompcrepublic.com"><Folder size={24} />Portfolio</a>
 								</div>
 							</motion.div>
-							<motion.form
-								className="contact-form"
-								onSubmit={handleFormSubmit}
-								initial={{ opacity: 0, x: 30 }}
-								whileInView={{ opacity: 1, x: 0 }}
-								viewport={{ once: true }}
-							>
+							<motion.form className="contact-form" onSubmit={handleFormSubmit} initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}>
 								<div className="form-group">
-									<label htmlFor="name">Name</label>
-									<input
-										type="text"
-										id="name"
-										value={formData.name}
-										onChange={(e) =>
-											setFormData({ ...formData, name: e.target.value })
-										}
-										required
-										placeholder="Your name"
-									/>
+									<label>Name</label>
+									<input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required placeholder="Your name" />
 								</div>
 								<div className="form-group">
-									<label htmlFor="email">Email</label>
-									<input
-										type="email"
-										id="email"
-										value={formData.email}
-										onChange={(e) =>
-											setFormData({ ...formData, email: e.target.value })
-										}
-										required
-										placeholder="your.email@example.com"
-									/>
+									<label>Email</label>
+									<input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required placeholder="your@email.com" />
 								</div>
 								<div className="form-group">
-									<label htmlFor="message">Message</label>
-									<textarea
-										id="message"
-										value={formData.message}
-										onChange={(e) =>
-											setFormData({ ...formData, message: e.target.value })
-										}
-										required
-										placeholder="Tell me about your project or issue..."
-										rows={5}
-									/>
+									<label>Message</label>
+									<textarea value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} required rows={4} placeholder="Tell me about your project..." />
 								</div>
-								<button
-									type="submit"
-									className="btn btn-primary"
-									disabled={formStatus === "sending"}
-								>
-									{formStatus === "sending" ? (
-										<span>Sending...</span>
-									) : (
-										<>
-											<Send size={18} />
-											Send Message
-										</>
-									)}
+								<button type="submit" className="btn btn-primary" disabled={formStatus === "sending"}>
+									{formStatus === "sending" ? "Sending..." : <><Send size={18} />Send Message</>}
 								</button>
-								{formStatus === "success" && (
-									<p className="form-success">
-										Message sent successfully! I'll get back to you soon.
-									</p>
-								)}
-								{formStatus === "error" && (
-									<p className="form-error">
-										Failed to send message. Please try again or contact
-										directly.
-									</p>
-								)}
+								{formStatus === "success" && <p className="form-success">Message sent! I'll get back to you soon.</p>}
+								{formStatus === "error" && <p className="form-error">Failed to send. Try again.</p>}
 							</motion.form>
 						</div>
 					</div>
@@ -653,10 +651,8 @@ function App() {
 			</main>
 
 			<footer className="footer">
-				<div className="footer-content">
-					<p>&copy; {new Date().getFullYear()} Freelance IT Engineer. All rights reserved.</p>
-					<p>Built with React, Vite, and deployed on Cloudflare Workers</p>
-				</div>
+				<p>&copy; {new Date().getFullYear()} Daniel R Jacobs. All rights reserved.</p>
+				<p>8+ Years Experience • SC-300 & MS-900 Certified</p>
 			</footer>
 		</div>
 	);
