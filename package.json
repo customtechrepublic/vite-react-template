@@ -1,8 +1,8 @@
 {
-	"name": "vite-react-template",
-	"description": "A template for building a React application with Vite, Hono, and Cloudflare Workers",
+	"name": "freelance-engineer-portfolio",
+	"description": "Freelance Tier 3 Helpdesk & Azure/M365 Project Engineer Portfolio",
 	"cloudflare": {
-		"label": "Vite React Template",
+		"label": "Freelance Engineer Portfolio",
 		"products": [
 			"Workers"
 		],
@@ -14,7 +14,10 @@
 	"dependencies": {
 		"hono": "4.11.1",
 		"react": "19.2.1",
-		"react-dom": "19.2.1"
+		"react-dom": "19.2.1",
+		"react-router-dom": "7.5.3",
+		"framer-motion": "12.12.0",
+		"lucide-react": "0.511.0"
 	},
 	"devDependencies": {
 		"@cloudflare/vite-plugin": "1.15.3",
