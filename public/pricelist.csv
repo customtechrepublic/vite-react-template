@@ -1,21 +1,17 @@
 id,name,category,type,description,price,duration,icon,featured
-1,Tier 2 IT Support,services,recurring,Comprehensive MSP support with 24/7 monitoring, SLAs, and ticket-based response,2500.00,month,Headphones,true
-2,Cloud Infrastructure Setup,services,onetime,Azure VM deployment with ZTNA, hybrid networking, and security hardening,8500.00,project,Cloud,true
-3,Microsoft 365 Migration,services,onetime,Complete M365 tenant setup, data migration, and user training for enterprises,12000.00,project,Briefcase,true
-4,Intune Device Management,services,recurring,Full Intune/MEM deployment with compliance policies and conditional access,3500.00,month,Server,true
-5,Tier 3 Support (Premium),services,recurring,Priority support for critical issues with 1-hour response time and dedicated engineer,6500.00,month,Award,true
-6,Exchange Online Setup,services,onetime,Exchange Online configuration, mailbox migration, and DKIM/SPF setup,5500.00,project,Mail,false
-7,Security Audit & Assessment,services,onetime,SOC 2 compliance assessment, vulnerability scanning, and security posture evaluation,9500.00,project,CheckCircle,false
-8,PowerShell Automation Scripts,products,digital,Custom PowerShell scripts for M365, Azure AD, and Intune automation,850.00,onetime,Code,true
-9,IT Documentation Templates,products,digital,Complete IT documentation suite - SOPs, runbooks, and architecture diagrams,550.00,onetime,Folder,true
-10,Azure AD Configuration Guide,products,digital,Step-by-step hybrid Azure AD and Microsoft Entra setup guide,750.00,onetime,Code,false
-11,Consulting - 1 Hour,packages,consultation,One-hour technical consultation for strategy or troubleshooting,1200.00,session,Briefcase,false
-12,Consulting - 4 Hours,packages,consultation,Four-hour deep-dive session for planning or complex troubleshooting,4200.00,session,Briefcase,false
-13,Consulting - Full Day,packages,consultation,Full-day strategic planning or implementation engagement,8000.00,session,Briefcase,true
-14,MacOS Support Package,services,recurring,Dedicated MacOS/iOS management via Jamf Pro and Intune,1800.00,month,Code,false
-15,Backup & Disaster Recovery,services,onetime,Enterprise backup solution with Veeam or Azure Backup, and DR planning,7500.00,project,Server,false
-16,Zero Trust Network Access,services,onetime,Full ZTNA implementation with Azure Conditional Access and VPN replacement,9800.00,project,CheckCircle,true
-17,AI Application Development,services,onetime,Custom AI-powered apps and chatbots using OpenAI, Azure OpenAI, or local LLMs,15000.00,project,Code,true
-18,Self-Hosted AI Inference,services,onetime,Deploy private AI models (LLMs, image generation) on premises or private cloud,12000.00,project,Server,true
-19,Server & Migration Services,services,onetime,Legacy server migrations, cloud-to-cloud transfers, and infrastructure modernization,9000.00,project,Server,false
-20,Integration & Automation,services,onetime,Connect disparate systems, build APIs, and automate workflows with n8n, Power Automate, or custom code,7000.00,project,Code,true
+1,Tier 2 IT Support,services,recurring,Comprehensive IT support with 24/7 monitoring and ticket-based response,150.00,month,Headphones,true
+2,Cloud Infrastructure Setup,services,onetime,Azure VM deployment with ZTNA and advanced networking,500.00,project,Cloud,false
+3,Microsoft 365 Migration,services,onetime,Complete M365 environment setup and data migration for enterprises,750.00,project,Briefcase,true
+4,Intune Device Management,services,recurring,Device management through Intune/MEM with compliance policies,200.00,month,Server,false
+5,Tier 3 Support (Premium),services,recurring,Priority support for critical infrastructure issues with 1-hour response,400.00,month,Award,true
+6,Exchange Online Setup,services,onetime,Exchange Online configuration and mailbox migration,300.00,project,Mail,false
+7,Security Audit & Assessment,services,onetime,SOC 2 compliance assessment and security posture evaluation,600.00,project,CheckCircle,false
+8,PowerShell Automation Scripts,products,digital,Custom PowerShell scripts for M365 and Azure automation,50.00,onetime,Code,false
+9,IT Documentation Templates,products,digital,Comprehensive IT documentation and SOP templates,30.00,onetime,Folder,false
+10,Azure AD Configuration Guide,products,digital,Step-by-step guide for Azure AD hybrid and Entra setup,40.00,onetime,Code,false
+11,Consulting - 1 Hour,packages,consultation,One-hour technical consultation with Daniel,75.00,session,Briefcase,false
+12,Consulting - 4 Hours,packages,consultation,Four-hour engagement for planning or troubleshooting,250.00,session,Briefcase,false
+13,Consulting - Full Day,packages,consultation,Full day (8 hours) strategic planning or implementation,500.00,session,Briefcase,true
+14,MacOS Support Package,services,recurring,Dedicated MacOS support and management,100.00,month,Code,false
+15,Backup & Disaster Recovery,services,onetime,Implement and configure enterprise backup solution,400.00,project,Server,false
+16,Zero Trust Network Access,services,onetime,Deploy ZTNA solution with Azure and Conditional Access,550.00,project,CheckCircle,false

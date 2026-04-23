@@ -169,70 +169,7 @@ function MatrixBackground() {
 	);
 }
 
-function LogStream() {
-	const logRef = useRef<HTMLDivElement>(null);
-	const [logs, setLogs] = useState<string[]>([]);
-	
-	useEffect(() => {
-		const logMessages = [
-			"[2026-04-19 10:23:45] INFO: Connecting to Azure AD tenant...",
-			"[2026-04-19 10:23:46] INFO: Authenticating user session...",
-			"[2026-04-19 10:23:47] INFO: Fetching Intune policies...",
-			"[2026-04-19 10:23:48] DEBUG: Processing conditional access rules...",
-			"[2026-04-19 10:23:49] INFO: Applying MFA challenge...",
-			"[2026-04-19 10:23:50] SUCCESS: User authenticated (SAML assertion verified)",
-			"[2026-04-19 10:23:51] INFO: Checking mailbox permissions...",
-			"[2026-04-19 10:23:52] DEBUG: Query: Get-Mailbox -Identity daniel@custompcrepublic.com",
-			"[2026-04-19 10:23:53] INFO: Exchange Online connection established",
-			"[2026-04-19 10:23:54] INFO: Syncing calendar entries...",
-			"[2026-04-19 10:23:55] DEBUG: GraphAPI: /users/daniel@example.com/calendar/events",
-			"[2026-04-19 10:23:56] SUCCESS: 47 events synced",
-			"[2026-04-19 10:23:57] INFO: Checking SharePoint permissions...",
-			"[2026-04-19 10:23:58] DEBUG: Get-SPOTenantSyncClientRestriction",
-			"[2026-04-19 10:23:59] INFO: Tenant sync enabled",
-			"[2026-04-19 10:24:00] INFO: Deploying Intune device policies...",
-			"[2026-04-19 10:24:01] DEBUG: Create-DeviceConfigurationPolicy",
-			"[2026-04-19 10:24:02] SUCCESS: Policy deployed to 250 devices",
-			"[2026-04-19 10:24:03] INFO: Scanning endpoint security...",
-			"[2026-04-19 10:24:04] WARN: 3 devices require attention",
-			"[2026-04-19 10:24:05] INFO: Initiating Defender scan...",
-			"[2026-04-19 10:24:06] DEBUG: ATP API: deviceactions/run antivirus scan",
-			"[2026-04-19 10:24:07] INFO: Scan completed - No threats detected",
-			"[2026-04-19 10:24:08] INFO: Checking VPN connections...",
-			"[2026-04-19 10:24:09] DEBUG: Get-VpnConnection | Where-Object {$_.Status -eq 'Connected'}",
-			"[2026-04-19 10:24:10] INFO: 15 active VPN sessions",
-			"[2026-04-19 10:24:11] INFO: Monitoring Azure VM health...",
-			"[2026-04-19 10:24:12] DEBUG: Get-AzVM | Select-Object Name, Status",
-			"[2026-04-19 10:24:13] INFO: All 12 VMs running optimally",
-			"[2026-04-19 10:24:14] INFO: Processing support tickets...",
-			"[2026-04-19 10:24:15] DEBUG: Get-Service @support | Where-Object Priority -eq 'High'",
-			"[2026-04-19 10:24:16] INFO: 5 high priority tickets pending",
-			"[2026-04-19 10:24:17] SYSTEM: Auto-assigning tickets to Available Engineers",
-		];
-		
-		let index = 0;
-		const interval = setInterval(() => {
-			setLogs(prev => {
-				const newLog = [...prev, logMessages[index % logMessages.length]];
-				if (newLog.length > 15) newLog.shift();
-				index++;
-				return newLog;
-			});
-		}, 150);
-		
-		return () => clearInterval(interval);
-	}, []);
 
-	return (
-		<div className="log-stream" ref={logRef}>
-			{logs.map((log, i) => (
-				<div key={i} className="log-line">
-					{log}
-				</div>
-			))}
-		</div>
-	);
-}
 
 const certifications = [
 	{ name: "SC-300", issuer: "Microsoft", year: "2022", desc: "Identity & Access Administrator" },
@@ -282,7 +219,6 @@ function App() {
 	const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 	const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 	const [currentPage, setCurrentPage] = useState<"portfolio" | "shop" | "blog">("portfolio");
-	const [logPanelVisible, setLogPanelVisible] = useState(true);
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -522,10 +458,6 @@ function App() {
 								</button>
 							</div>
 						</motion.div>
-					</div>
-					{logPanelVisible && <div className="log-backdrop" onClick={() => setLogPanelVisible(false)} />}
-					<div className="log-panel" style={{ display: logPanelVisible ? 'block' : 'none' }}>
-						<LogStream />
 					</div>
 				</section>
 
