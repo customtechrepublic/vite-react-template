@@ -7,11 +7,12 @@ import {
 import { 
 	Headphones, Cloud, Mail, Folder, Briefcase, Award, Send,
 	Linkedin, Server, Code, CheckCircle, Menu, X,
-	Sun, Moon, Phone, Globe, ShoppingBag,
+	Sun, Moon, Phone, Globe, ShoppingBag, MessageSquare,
 	Activity, TrendingUp, Calendar
 } from "lucide-react";
 import "./App.css";
 import Shop from "./Shop";
+import Blog from "./Blog";
 
 const skillProficiency = [
 	{ skill: "Microsoft 365", level: 95, category: "cloud", years: 8 },
@@ -61,20 +62,41 @@ const techKeywords = [
 	"VLAN", "Firewall", "Cisco", "Fortinet", "SonicWall", "ZeroTrust",
 	"Exchange2016", "Exchange2019", "DAG", "Transport",
 	"ConnectWise", "NinjaOne", "ITGlue", "Kanban", "Jira",
-	"MacOS", "WindowsServer", "Linux", "Ubuntu", "CentOS"
+	"MacOS", "WindowsServer", "Linux", "Ubuntu", "CentOS",
+	"JamfPro", "AppleDEP", "MDM", "MobileIron", "WorkspaceONE",
+	"AzureDevOps", "GitHub", "GitLab", "CI/CD", "Docker", "Kubernetes",
+	"OpenAI", "AzureOpenAI", "LangChain", "LLM", "ChatGPT", "AIInference",
+	"Ollama", "LMStudio", "PrivateAI", "RAG", "VectorDB", "Pinecone",
+	"n8n", "PowerAutomate", "Zapier", "WorkflowAutomation", "Webhook",
+	"Cloudflare", "AWS", "GCP", "DigitalOcean", "Proxmox", "VMware",
+	"HyperV", "ESXi", "vSphere", "SAN", "NAS", "iSCSI", "SMB",
+	"Sophos", "CrowdStrike", "PaloAlto", "Bitdefender", "MalwareBytes",
+	"SPLUNK", "LogRhythm", "SIEM", "SOC", "IncidentResponse",
+	"Office365", "TeamsPhone", "VoiceMigration", "DirectRouting",
+	"Windows365", "AzureVirtualDesktop", "WVD", "AVD", "RemoteDesktop",
+	"Bitwarden", "1Password", "SecretServer", "Vault", "PasswordManager",
+	"SSL", "TLS", "CertificateManager", "LetsEncrypt", "PKI",
+	"PrintServer", "FileServer", "DFS-R", "Robocopy", "BackupExec",
+	"Veeam", "AzureBackup", "AmazonS3", "Backblaze", "Restic",
+	"VoIP", "Asterisk", "FreePBX", "SIP", "IPPhone", "TeamsCalling",
+	"ServiceNow", "FreshService", "Zendesk", "HelpDesk", "Ticketing",
+	"MSP", "RMM", "RemoteMonitoring", "N-Central", "DattoRMM",
+	"Scripting", "Python", "NodeJS", "TypeScript", "React", "API",
+	"PostgreSQL", "MySQL", "MongoDB", "Redis", "Caching",
+	"SelfHosted", "HomeLab", "HomelabOS", "Sandstorm", "OnlyOffice"
 ];
 
 const experienceData = [
 	{ year: "2016", projects: 15, clients: 8, tickets: 200 },
-	{ year: "2017", projects: 25, clients: 12, tickets: 350 },
-	{ year: "2018", projects: 45, clients: 20, tickets: 520 },
-	{ year: "2019", projects: 65, clients: 28, tickets: 480 },
-	{ year: "2020", projects: 75, clients: 32, tickets: 420 },
-	{ year: "2021", projects: 90, clients: 40, tickets: 380 },
-	{ year: "2022", projects: 100, clients: 45, tickets: 350 },
-	{ year: "2023", projects: 110, clients: 50, tickets: 320 },
-	{ year: "2024", projects: 120, clients: 55, tickets: 300 },
-	{ year: "2025", projects: 125, clients: 58, tickets: 280 },
+	{ year: "2017", projects: 35, clients: 15, tickets: 420 },
+	{ year: "2018", projects: 75, clients: 28, tickets: 680 },
+	{ year: "2019", projects: 145, clients: 42, tickets: 920 },
+	{ year: "2020", projects: 110, clients: 38, tickets: 580 },
+	{ year: "2021", projects: 105, clients: 45, tickets: 480 },
+	{ year: "2022", projects: 115, clients: 50, tickets: 520 },
+	{ year: "2023", projects: 125, clients: 55, tickets: 680 },
+	{ year: "2024", projects: 135, clients: 60, tickets: 850 },
+	{ year: "2025", projects: 145, clients: 65, tickets: 1150 },
 ];
 
 const radarData = [
@@ -259,7 +281,8 @@ function App() {
 	const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 	const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 	const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-	const [currentPage, setCurrentPage] = useState<"portfolio" | "shop">("portfolio");
+	const [currentPage, setCurrentPage] = useState<"portfolio" | "shop" | "blog">("portfolio");
+	const [logPanelVisible, setLogPanelVisible] = useState(true);
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -340,6 +363,22 @@ function App() {
 							<Folder size={18} />
 							Portfolio
 						</a>
+						<a href="https://github.com/danielrjacobs" target="_blank" rel="noopener">
+							<Code size={18} />
+							GitHub
+						</a>
+						<a href="https://danielrjacobs.custompcrepublic.com/feedback" target="_blank" rel="noopener">
+							<MessageSquare size={18} />
+							Feedback
+						</a>
+						<a href="https://danielrjacobs.custompcrepublic.com/ticket" target="_blank" rel="noopener">
+							<Calendar size={18} />
+							Open Ticket
+						</a>
+						<a href="https://danielrjacobs.custompcrepublic.com/partner" target="_blank" rel="noopener">
+							<Globe size={18} />
+							Partner Login
+						</a>
 					</div>
 					<button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
 						{darkMode ? <Sun size={20} /> : <Moon size={20} />}
@@ -357,6 +396,13 @@ function App() {
 								{item.charAt(0).toUpperCase() + item.slice(1)}
 							</button>
 						))}
+						<button 
+							className={`nav-item ${currentPage === "blog" ? "active" : ""}`}
+							onClick={() => setCurrentPage("blog")}
+						>
+							<MessageSquare size={18} />
+							Blog
+						</button>
 						<button 
 							className={`nav-item ${currentPage === "shop" ? "active" : ""}`}
 							onClick={() => setCurrentPage("shop")}
@@ -388,6 +434,16 @@ function App() {
 						</button>
 					))}
 					<button 
+						className={`nav-item ${currentPage === "blog" ? "active" : ""}`}
+						onClick={() => {
+							setCurrentPage("blog");
+							setMobileMenuOpen(false);
+						}}
+					>
+						<MessageSquare size={18} />
+						Blog
+					</button>
+					<button 
 						className={`nav-item ${currentPage === "shop" ? "active" : ""}`}
 						onClick={() => {
 							setCurrentPage("shop");
@@ -411,12 +467,20 @@ function App() {
 							<p className="hero-greeting">Hello, I'm</p>
 							<h1 className="hero-name">Daniel R Jacobs</h1>
 							<p className="hero-title">
-								Tier 2 IT Support Engineer • Cloud Systems Engineer
+								Tier 2 IT Support Engineer • Cloud Systems Engineer • AI Solutions Developer
 							</p>
 							<p className="hero-description">
 								8+ years enterprise IT experience. SC-300 & MS-900 certified.
-								Specializing in Microsoft 365, Azure, and cloud infrastructure.
+								Specializing in Microsoft 365, Azure, AI app development, and self-hosted AI inference.
+								I simplify complex IT stacks so you can focus on your business.
 							</p>
+							<div className="hero-badges">
+								<span className="badge SOC2">SOC 2 Compliant</span>
+								<span className="badge macos">MacOS Specialist</span>
+								<span className="badge msp">MSP Expert</span>
+								<span className="badge ai">AI Developer</span>
+								<span className="badge selfhosted">Self-Hosted Pro</span>
+							</div>
 							<div className="hero-stats">
 								<div className="stat-box">
 									<TrendingUp size={24} />
@@ -440,22 +504,27 @@ function App() {
 								</div>
 							</div>
 							<div className="hero-badges">
-								<span className="badge">SOC 2 Compliant</span>
-								<span className="badge">MacOS Specialist</span>
-								<span className="badge">MSP Expert</span>
-								<span className="badge">$30/hr Rate</span>
+								<span className="badge SOC2">SOC 2 Compliant</span>
+								<span className="badge macos">MacOS Specialist</span>
+								<span className="badge msp">MSP Expert</span>
+								<span className="badge ai">AI Developer</span>
+								<span className="badge selfhosted">Self-Hosted Pro</span>
 							</div>
 							<div className="hero-buttons">
 								<button className="btn btn-primary" onClick={() => scrollToSection("contact")}>
 									<Send size={18} /> Get In Touch
 								</button>
+								<a href="https://github.com/danielrjacobs" target="_blank" rel="noopener" className="btn btn-secondary">
+									<Code size={18} /> GitHub
+								</a>
 								<button className="btn btn-secondary" onClick={() => scrollToSection("skills")}>
 									<Code size={18} /> View Skills
 								</button>
 							</div>
 						</motion.div>
 					</div>
-					<div className="log-panel">
+					{logPanelVisible && <div className="log-backdrop" onClick={() => setLogPanelVisible(false)} />}
+					<div className="log-panel" style={{ display: logPanelVisible ? 'block' : 'none' }}>
 						<LogStream />
 					</div>
 				</section>
@@ -562,6 +631,57 @@ transition={{ delay: 0.1 }}
 									</ul>
 								</motion.div>
 							))}
+						</div>
+					</div>
+				</section>
+
+				<section id="ai-services" className="section ai-services">
+					<div className="section-content">
+						<motion.div className="section-header" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
+							<h2>AI & Self-Hosted Solutions</h2>
+							<p>Modern AI-powered solutions that simplify your business</p>
+						</motion.div>
+						<div className="ai-services-grid">
+							<motion.div className="ai-service-card" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }}>
+								<div className="ai-icon"><Code size={32} /></div>
+								<h3>AI Application Development</h3>
+								<p>Custom chatbots, AI assistants, and automation powered by OpenAI, Azure OpenAI, or private LLMs.</p>
+								<ul>
+									<li><CheckCircle size={14} /> ChatGPT integration</li>
+									<li><CheckCircle size={14} /> Custom AI assistants</li>
+									<li><CheckCircle size={14} /> Workflow automation</li>
+									<li><CheckCircle size={14} /> API development</li>
+								</ul>
+							</motion.div>
+							<motion.div className="ai-service-card" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}>
+								<div className="ai-icon"><Server size={32} /></div>
+								<h3>Self-Hosted AI Inference</h3>
+								<p>Run private AI models on your own infrastructure. Keep your data secure while leveraging LLMs.</p>
+								<ul>
+									<li><CheckCircle size={14} /> Ollama deployment</li>
+									<li><CheckCircle size={14} /> Local LLM hosting</li>
+									<li><CheckCircle size={14} /> Image generation AI</li>
+									<li><CheckCircle size={14} /> Complete data privacy</li>
+								</ul>
+							</motion.div>
+							<motion.div className="ai-service-card" initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}>
+								<div className="ai-icon"><Cloud size={32} /></div>
+								<h3>Integration & Automation</h3>
+								<p>Connect everything. Automate anything. Replace complex, expensive stacks with streamlined solutions.</p>
+								<ul>
+									<li><CheckCircle size={14} /> n8n workflows</li>
+									<li><CheckCircle size={14} /> API integrations</li>
+									<li><CheckCircle size={14} /> Legacy system migration</li>
+									<li><CheckCircle size={14} /> Cost optimization</li>
+								</ul>
+							</motion.div>
+						</div>
+						<div className="ai-cta">
+							<h3>Ready to Simplify Your IT Stack?</h3>
+							<p>Stop managing complex, expensive systems. I'll integrate, simplify, and automate everything so you can focus on your business.</p>
+							<button className="btn btn-primary" onClick={() => scrollToSection("contact")}>
+								<Send size={18} /> Let's Talk
+							</button>
 						</div>
 					</div>
 				</section>
@@ -717,6 +837,8 @@ transition={{ delay: 0.1 }}
 					</div>
 				</section>
 			</>
+			) : currentPage === "blog" ? (
+				<Blog />
 			) : (
 				<Shop />
 			)}
