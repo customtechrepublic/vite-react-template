@@ -1,0 +1,17 @@
+id,name,category,type,description,price,duration,icon,featured
+1,Tier 2 IT Support,services,recurring,Comprehensive IT support with 24/7 monitoring and ticket-based response,150.00,month,Headphones,true
+2,Cloud Infrastructure Setup,services,onetime,Azure VM deployment with ZTNA and advanced networking,500.00,project,Cloud,false
+3,Microsoft 365 Migration,services,onetime,Complete M365 environment setup and data migration for enterprises,750.00,project,Briefcase,true
+4,Intune Device Management,services,recurring,Device management through Intune/MEM with compliance policies,200.00,month,Server,false
+5,Tier 3 Support (Premium),services,recurring,Priority support for critical infrastructure issues with 1-hour response,400.00,month,Award,true
+6,Exchange Online Setup,services,onetime,Exchange Online configuration and mailbox migration,300.00,project,Mail,false
+7,Security Audit & Assessment,services,onetime,SOC 2 compliance assessment and security posture evaluation,600.00,project,CheckCircle,false
+8,PowerShell Automation Scripts,products,digital,Custom PowerShell scripts for M365 and Azure automation,50.00,onetime,Code,false
+9,IT Documentation Templates,products,digital,Comprehensive IT documentation and SOP templates,30.00,onetime,Folder,false
+10,Azure AD Configuration Guide,products,digital,Step-by-step guide for Azure AD hybrid and Entra setup,40.00,onetime,Code,false
+11,Consulting - 1 Hour,packages,consultation,One-hour technical consultation with Daniel,75.00,session,Briefcase,false
+12,Consulting - 4 Hours,packages,consultation,Four-hour engagement for planning or troubleshooting,250.00,session,Briefcase,false
+13,Consulting - Full Day,packages,consultation,Full day (8 hours) strategic planning or implementation,500.00,session,Briefcase,true
+14,MacOS Support Package,services,recurring,Dedicated MacOS support and management,100.00,month,Code,false
+15,Backup & Disaster Recovery,services,onetime,Implement and configure enterprise backup solution,400.00,project,Server,false
+16,Zero Trust Network Access,services,onetime,Deploy ZTNA solution with Azure and Conditional Access,550.00,project,CheckCircle,false

@@ -7,10 +7,11 @@ import {
 import { 
 	Headphones, Cloud, Mail, Folder, Briefcase, Award, Send,
 	Linkedin, Server, Code, CheckCircle, Menu, X,
-	Sun, Moon, Phone, Globe,
+	Sun, Moon, Phone, Globe, ShoppingBag,
 	Activity, TrendingUp, Calendar
 } from "lucide-react";
 import "./App.css";
+import Shop from "./Shop";
 
 const skillProficiency = [
 	{ skill: "Microsoft 365", level: 95, category: "cloud", years: 8 },
@@ -258,6 +259,7 @@ function App() {
 	const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 	const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 	const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+	const [currentPage, setCurrentPage] = useState<"portfolio" | "shop">("portfolio");
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -347,11 +349,21 @@ function App() {
 							<button 
 								key={item} 
 								className={`nav-item ${activeSection === item ? "active" : ""}`}
-								onClick={() => scrollToSection(item)}
+								onClick={() => {
+									setCurrentPage("portfolio");
+									scrollToSection(item);
+								}}
 							>
 								{item.charAt(0).toUpperCase() + item.slice(1)}
 							</button>
 						))}
+						<button 
+							className={`nav-item ${currentPage === "shop" ? "active" : ""}`}
+							onClick={() => setCurrentPage("shop")}
+						>
+							<ShoppingBag size={18} />
+							Shop
+						</button>
 					</nav>
 					<button className="mobile-menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
 						{mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -359,22 +371,42 @@ function App() {
 				</div>
 			</header>
 
-			<AnimatePresence>
-				{mobileMenuOpen && (
-					<motion.div className="mobile-nav" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
-						{["home", "about", "services", "skills", "projects", "contact"].map((item) => (
-							<button key={item} className={`nav-item ${activeSection === item ? "active" : ""}`} onClick={() => scrollToSection(item)}>
-								{item.charAt(0).toUpperCase() + item.slice(1)}
-							</button>
-						))}
-					</motion.div>
-				)}
-			</AnimatePresence>
+		<AnimatePresence>
+			{mobileMenuOpen && (
+				<motion.div className="mobile-nav" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+					{["home", "about", "services", "skills", "projects", "contact"].map((item) => (
+						<button 
+							key={item} 
+							className={`nav-item ${activeSection === item ? "active" : ""}`} 
+							onClick={() => {
+								setCurrentPage("portfolio");
+								scrollToSection(item);
+								setMobileMenuOpen(false);
+							}}
+						>
+							{item.charAt(0).toUpperCase() + item.slice(1)}
+						</button>
+					))}
+					<button 
+						className={`nav-item ${currentPage === "shop" ? "active" : ""}`}
+						onClick={() => {
+							setCurrentPage("shop");
+							setMobileMenuOpen(false);
+						}}
+					>
+						<ShoppingBag size={18} />
+						Shop
+					</button>
+				</motion.div>
+			)}
+		</AnimatePresence>
 
-			<main>
-				<section id="home" className="hero">
-					<MatrixBackground />
-					<div className="hero-content">
+		<main>
+			{currentPage === "portfolio" ? (
+				<>
+					<section id="home" className="hero">
+						<MatrixBackground />
+						<div className="hero-content">
 						<motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
 							<p className="hero-greeting">Hello, I'm</p>
 							<h1 className="hero-name">Daniel R Jacobs</h1>
@@ -684,7 +716,11 @@ transition={{ delay: 0.1 }}
 						</div>
 					</div>
 				</section>
-			</main>
+			</>
+			) : (
+				<Shop />
+			)}
+		</main>
 
 			<footer className="footer">
 				<p>&copy; {new Date().getFullYear()} Daniel R Jacobs. All rights reserved.</p>
