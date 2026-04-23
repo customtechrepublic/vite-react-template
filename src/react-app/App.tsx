@@ -290,60 +290,26 @@ function App() {
 						<Server size={28} />
 						<span>Daniel R Jacobs</span>
 					</motion.div>
-					<div className="header-links">
-						<a href="https://www.custompcrepublic.com" target="_blank" rel="noopener">
-							<Globe size={18} />
-							www.custompcrepublic.com
-						</a>
-						<a href="https://danieljacobs.custompcrepublic.com" target="_blank" rel="noopener">
-							<Folder size={18} />
-							Portfolio
-						</a>
-						<a href="https://github.com/danielrjacobs" target="_blank" rel="noopener">
-							<Code size={18} />
-							GitHub
-						</a>
-						<a href="https://danielrjacobs.custompcrepublic.com/feedback" target="_blank" rel="noopener">
-							<MessageSquare size={18} />
-							Feedback
-						</a>
-						<a href="https://danielrjacobs.custompcrepublic.com/ticket" target="_blank" rel="noopener">
-							<Calendar size={18} />
-							Open Ticket
-						</a>
-						<a href="https://danielrjacobs.custompcrepublic.com/partner" target="_blank" rel="noopener">
-							<Globe size={18} />
-							Partner Login
-						</a>
-					</div>
 					<button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
 						{darkMode ? <Sun size={20} /> : <Moon size={20} />}
 					</button>
 					<nav className="desktop-nav">
-						{["home", "about", "services", "skills", "projects", "contact"].map((item) => (
-							<button 
-								key={item} 
-								className={`nav-item ${activeSection === item ? "active" : ""}`}
-								onClick={() => {
-									setCurrentPage("portfolio");
-									scrollToSection(item);
-								}}
-							>
-								{item.charAt(0).toUpperCase() + item.slice(1)}
-							</button>
-						))}
+						<button 
+							className={`nav-item ${currentPage === "portfolio" ? "active" : ""}`}
+							onClick={() => setCurrentPage("portfolio")}
+						>
+							Home
+						</button>
 						<button 
 							className={`nav-item ${currentPage === "blog" ? "active" : ""}`}
 							onClick={() => setCurrentPage("blog")}
 						>
-							<MessageSquare size={18} />
 							Blog
 						</button>
 						<button 
 							className={`nav-item ${currentPage === "shop" ? "active" : ""}`}
 							onClick={() => setCurrentPage("shop")}
 						>
-							<ShoppingBag size={18} />
 							Shop
 						</button>
 					</nav>
