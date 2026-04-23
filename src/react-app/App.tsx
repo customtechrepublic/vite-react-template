@@ -393,9 +393,9 @@ function App() {
 			)}
 		</AnimatePresence>
 
-		<main>
-			{currentPage === "portfolio" ? (
-				<>
+        <main>
+            {currentPage === "portfolio" ? (
+                <>
 					<section id="home" className="hero">
 						<MatrixBackground />
 						<div className="hero-content">
@@ -769,11 +769,7 @@ transition={{ delay: 0.1 }}
 					</div>
 				</section>
 			</>
-			) : currentPage === "blog" ? (
-				<Blog />
-			) : (
-				<Shop />
-			)}
+            ) : (currentPage === "blog" ? <Blog /> : <Shop />)
 		</main>
 
 			<footer className="footer">
